@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KasiStay — Admin Command Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --surface3: #1e1e28;
+  --border: rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.14);
+  --accent: #7c6cff;
+  --accent2: #00e5b4;
+  --accent3: #ff6b6b;
+  --accent4: #ffd166;
+  --text: #f0f0f5;
+  --text2: #8888a0;
+  --text3: #5555708;
+  --green: #00e5b4;
+  --red: #ff6b6b;
+  --yellow: #ffd166;
+  --blue: #5b9bff;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 30px rgba(0,0,0,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+/* ─── GRID NOISE BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(124,108,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(0,229,180,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 100;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+.sidebar-logo {
+  padding: 28px 24px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .logo-text {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text);
+}
+.sidebar-logo .logo-text span { color: var(--accent); }
+.sidebar-logo .admin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(124,108,255,0.15);
+  border: 1px solid rgba(124,108,255,0.3);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 6px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text2);
+  padding: 14px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  user-select: none;
+}
+.nav-item:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+.nav-item.active {
+  background: rgba(124,108,255,0.15);
+  color: var(--accent);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+}
+.nav-item i { width: 18px; text-align: center; font-size: 0.9rem; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--red);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+  animation: pulse-badge 2s infinite;
+}
+@keyframes pulse-badge {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(255,107,107,0); }
+}
+.nav-badge.yellow { background: var(--yellow); animation: none; }
+.nav-badge.green { background: var(--green); color: #000; animation: none; }
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid var(--border);
+}
+.admin-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.admin-profile:hover { background: var(--surface2); }
+.admin-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: white;
+  flex-shrink: 0;
+}
+.admin-info .name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.admin-info .role { font-size: 0.72rem; color: var(--text2); }
+.admin-profile .chevron { margin-left: auto; color: var(--text2); font-size: 0.75rem; }
+
+/* ─── MAIN CONTENT ─── */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,15,0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar-left h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+.topbar-left p { font-size: 0.82rem; color: var(--text2); margin-top: 2px; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.topbar-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-bright);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topbar-btn:hover { background: var(--surface3); border-color: var(--border-bright); }
+.topbar-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.topbar-btn.primary:hover { background: #9080ff; }
+
+.notif-btn {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border-bright);
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+  color: var(--text2);
+}
+.notif-btn:hover { background: var(--surface3); color: var(--text); }
+.notif-dot {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
+
+/* ─── TAB CONTENT ─── */
+.tab-content { display: none; padding: 28px 32px; animation: fadeUp 0.35s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── STATS GRID ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+  animation: fadeUp 0.4s ease backwards;
+}
+.stat-card:hover { transform: translateY(-2px); border-color: var(--border-bright); }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 60px; height: 60px;
+  border-radius: 0 16px 0 60px;
+  opacity: 0.1;
+}
+.stat-card.purple::after { background: var(--accent); }
+.stat-card.green::after { background: var(--green); }
+.stat-card.red::after { background: var(--red); }
+.stat-card.yellow::after { background: var(--yellow); }
+
+.stat-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  margin-bottom: 14px;
+}
+.stat-icon.purple { background: rgba(124,108,255,0.15); color: var(--accent); }
+.stat-icon.green { background: rgba(0,229,180,0.12); color: var(--green); }
+.stat-icon.red { background: rgba(255,107,107,0.12); color: var(--red); }
+.stat-icon.yellow { background: rgba(255,209,102,0.12); color: var(--yellow); }
+
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label { font-size: 0.8rem; color: var(--text2); font-weight: 500; }
+.stat-change {
+  margin-top: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stat-change.up { color: var(--green); }
+.stat-change.down { color: var(--red); }
+
+/* ─── SECTION HEADERS ─── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.section-subtitle { font-size: 0.8rem; color: var(--text2); margin-top: 2px; }
+
+/* ─── TABLE ─── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  flex: 1;
+  max-width: 320px;
+}
+.search-field i { color: var(--text2); font-size: 0.85rem; }
+.search-field input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  width: 100%;
+}
+.search-field input::placeholder { color: var(--text2); }
+
+.filter-select {
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+.filter-select option { background: var(--surface2); }
+
+table { width: 100%; border-collapse: collapse; }
+thead tr { border-bottom: 1px solid var(--border); }
+th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text2);
+  white-space: nowrap;
+}
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
+
+.listing-thumb {
+  width: 52px; height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+.listing-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.listing-name { font-weight: 600; font-size: 0.875rem; }
+.listing-loc { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.status-pill.approved { background: rgba(0,229,180,0.12); color: var(--green); border: 1px solid rgba(0,229,180,0.2); }
+.status-pill.pending { background: rgba(255,209,102,0.12); color: var(--yellow); border: 1px solid rgba(255,209,102,0.2); }
+.status-pill.rejected { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.status-pill.active { background: rgba(91,155,255,0.12); color: var(--blue); border: 1px solid rgba(91,155,255,0.2); }
+.status-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+.action-btns { display: flex; gap: 6px; align-items: center; }
+.action-btn {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-bright);
+  background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--text2);
+  transition: all 0.15s;
+}
+.action-btn:hover { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,0.2); }
+.action-btn.approve:hover { background: rgba(0,229,180,0.15); color: var(--green); border-color: rgba(0,229,180,0.3); }
+.action-btn.reject:hover { background: rgba(255,107,107,0.15); color: var(--red); border-color: rgba(255,107,107,0.3); }
+.action-btn.edit:hover { background: rgba(124,108,255,0.15); color: var(--accent); border-color: rgba(124,108,255,0.3); }
+.action-btn.delete:hover { background: rgba(255,107,107,0.15); color: var(--red); border-color: rgba(255,107,107,0.3); }
+
+.table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text2);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pagination { display: flex; gap: 4px; }
+.page-btn {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border-bright);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.page-btn:hover { background: var(--surface2); color: var(--text); }
+.page-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ─── APPROVAL QUEUE ─── */
+.approval-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.approval-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.25s;
+  animation: fadeUp 0.4s ease backwards;
+}
+.approval-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+.approval-card.highlight-new {
+  border-color: rgba(255,209,102,0.35);
+  box-shadow: 0 0 0 1px rgba(255,209,102,0.1);
+}
+.approval-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2);
+}
+.approval-img img { width: 100%; height: 100%; object-fit: cover; }
+.approval-body { padding: 16px; }
+.approval-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.approval-price {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.approval-price span { font-size: 0.75rem; font-family: 'DM Sans', sans-serif; color: var(--text2); font-weight: 400; }
+.approval-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+.approval-loc { font-size: 0.8rem; color: var(--text2); display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+.approval-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.approval-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  background: var(--surface3);
+  border-radius: 6px;
+  color: var(--text2);
+}
+.approval-actions { display: flex; gap: 8px; }
+.approval-btn {
+  flex: 1;
+  padding: 9px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.approval-btn.approve { background: rgba(0,229,180,0.15); color: var(--green); border: 1px solid rgba(0,229,180,0.25); }
+.approval-btn.approve:hover { background: var(--green); color: #000; }
+.approval-btn.reject { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.approval-btn.reject:hover { background: var(--red); color: white; }
+.approval-btn.preview { background: var(--surface2); color: var(--text); border: 1px solid var(--border-bright); }
+.approval-btn.preview:hover { background: var(--surface3); }
+
+/* ─── ANALYTICS ─── */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.chart-canvas { width: 100%; height: 200px; position: relative; }
+
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-bottom: 4px; }
+.bar-group { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.bar {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.8s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  cursor: pointer;
+  position: relative;
+  min-height: 4px;
+}
+.bar:hover { opacity: 0.85; }
+.bar.purple { background: linear-gradient(180deg, var(--accent), rgba(124,108,255,0.5)); }
+.bar.green { background: linear-gradient(180deg, var(--green), rgba(0,229,180,0.4)); }
+.bar-label { font-size: 0.65rem; color: var(--text2); font-weight: 500; }
+
+.donut-container {
+  position: relative;
+  width: 140px; height: 140px;
+  margin: 0 auto 16px;
+}
+.donut-svg { transform: rotate(-90deg); }
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.donut-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+.donut-sub { font-size: 0.65rem; color: var(--text2); }
+.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.legend-label { flex: 1; margin-left: 8px; color: var(--text2); }
+.legend-val { font-weight: 700; color: var(--text); }
+
+/* ─── USERS TABLE ─── */
+.user-row-info { display: flex; align-items: center; gap: 10px; }
+.user-mini-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: white;
+  flex-shrink: 0;
+}
+.user-uname { font-weight: 600; font-size: 0.875rem; }
+.user-email { font-size: 0.72rem; color: var(--text2); }
+
+/* ─── SETTINGS ─── */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.settings-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+.settings-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.settings-card h3 i { color: var(--accent); font-size: 0.9rem; }
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: 0.85rem; font-weight: 500; }
+.settings-desc { font-size: 0.75rem; color: var(--text2); margin-top: 1px; }
+
+/* Toggle */
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--surface3);
+  border-radius: 11px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.25s;
+  flex-shrink: 0;
+  border: 1px solid var(--border-bright);
+}
+.toggle.on { background: var(--accent); border-color: var(--accent); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 16px; height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px; left: 2px;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle.on::after { transform: translateX(18px); }
+
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 0.8rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; }
+.form-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--accent); }
+.save-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.save-btn:hover { background: #9080ff; transform: translateY(-1px); }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalIn 0.3s cubic-bezier(0.34,1.2,0.64,1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.93) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-head h2 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: var(--surface3); color: var(--text); }
+.modal-body { padding: 24px; overflow-y: auto; flex: 1; }
+.modal-foot {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.btn-cancel {
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  color: var(--text);
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cancel:hover { background: var(--surface3); }
+.btn-confirm {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-confirm:hover { background: #9080ff; }
+.btn-confirm.danger { background: var(--red); }
+.btn-confirm.danger:hover { background: #ff4a4a; }
+.btn-confirm.green { background: var(--green); color: #000; }
+.btn-confirm.green:hover { background: #00ccaa; }
+
+/* ─── TOAST ─── */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 12px;
+  padding: 14px 18px;
+  min-width: 280px;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s ease;
+  transition: opacity 0.3s;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+.toast-text { font-size: 0.85rem; font-weight: 500; }
+.toast.success { border-left: 3px solid var(--green); }
+.toast.success .toast-icon { color: var(--green); }
+.toast.error { border-left: 3px solid var(--red); }
+.toast.error .toast-icon { color: var(--red); }
+.toast.info { border-left: 3px solid var(--accent); }
+.toast.info .toast-icon { color: var(--accent); }
+
+/* ─── ACTIVITY FEED ─── */
+.activity-list { display: flex; flex-direction: column; gap: 1px; }
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  animation: fadeUp 0.3s ease;
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.activity-dot.green { background: rgba(0,229,180,0.12); color: var(--green); }
+.activity-dot.red { background: rgba(255,107,107,0.12); color: var(--red); }
+.activity-dot.yellow { background: rgba(255,209,102,0.12); color: var(--yellow); }
+.activity-dot.purple { background: rgba(124,108,255,0.12); color: var(--accent); }
+.activity-text { font-size: 0.83rem; line-height: 1.5; }
+.activity-text strong { font-weight: 600; }
+.activity-time { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text2);
+}
+.empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; }
+.empty-state h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.empty-state p { font-size: 0.85rem; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
+  .analytics-grid { grid-template-columns: 1fr; }
+  .settings-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .topbar { padding: 16px 20px; }
+  .tab-content { padding: 20px; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .approval-grid { grid-template-columns: 1fr; }
+}
+
+.hamburger {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border-bright);
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 0.85rem;
+}
+@media (max-width: 900px) { .hamburger { display: flex; } }
+
+.overlay-bg {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+}
+.overlay-bg.open { display: block; }
+
+/* Checkbox */
+input[type=checkbox] {
+  width: 16px; height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Scroll */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
+
+/* Anim delays for stat cards */
+.stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-card:nth-child(2) { animation-delay: 0.06s; }
+.stat-card:nth-child(3) { animation-delay: 0.12s; }
+.stat-card:nth-child(4) { animation-delay: 0.18s; }
+
+.approval-card:nth-child(1) { animation-delay: 0s; }
+.approval-card:nth-child(2) { animation-delay: 0.07s; }
+.approval-card:nth-child(3) { animation-delay: 0.14s; }
+.approval-card:nth-child(4) { animation-delay: 0.21s; }
+</style>
+</head>
+<body>
+
+<div class="overlay-bg" id="overlayBg" onclick="closeSidebar()"></div>
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">KasiStay<span>.</span></div>
+    <div class="admin-pill"><i class="fa-solid fa-shield-halved"></i> Admin Panel</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="switchTab('dashboard', this)">
+      <i class="fa-solid fa-chart-pie"></i> Dashboard
+    </div>
+
+    <div class="nav-section-label">Listings</div>
+    <div class="nav-item" onclick="switchTab('approvals', this)">
+      <i class="fa-solid fa-clock-rotate-left"></i> Pending Approvals
+      <span class="nav-badge" id="pendingBadge">0</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('listings', this)">
+      <i class="fa-solid fa-house-chimney"></i> All Listings
+    </div>
+
+    <div class="nav-section-label">Management</div>
+    <div class="nav-item" onclick="switchTab('users', this)">
+      <i class="fa-solid fa-users"></i> Users
+    </div>
+    <div class="nav-item" onclick="switchTab('reviews', this)">
+      <i class="fa-solid fa-star"></i> Reviews
+    </div>
+    <div class="nav-item" onclick="switchTab('analytics', this)">
+      <i class="fa-solid fa-chart-line"></i> Analytics
+    </div>
+    <div class="nav-item" onclick="switchTab('activity', this)">
+      <i class="fa-solid fa-bolt"></i> Activity Log
+      <span class="nav-badge green" id="activityBadge">Live</span>
+    </div>
+
+    <div class="nav-section-label">System</div>
+    <div class="nav-item" onclick="switchTab('settings', this)">
+      <i class="fa-solid fa-sliders"></i> Settings
+    </div>
+    <div class="nav-item" onclick="window.open('kasistay.html','_blank')">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> View Live Site
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-profile">
+      <div class="admin-avatar">A</div>
+      <div class="admin-info">
+        <div class="name">Admin</div>
+        <div class="role">Super Administrator</div>
+      </div>
+      <i class="fa-solid fa-chevron-right chevron"></i>
+    </div>
+  </div>
+</aside>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div class="hamburger" onclick="openSidebar()"><i class="fa-solid fa-bars"></i></div>
+      <div class="topbar-left">
+        <h1 id="topbarTitle">Dashboard</h1>
+        <p id="topbarSubtitle">Welcome back — here's what's happening</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn" title="Notifications"><i class="fa-solid fa-bell"></i><div class="notif-dot"></div></div>
+      <button class="topbar-btn primary" onclick="refreshData()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+    </div>
+  </div>
+
+  <!-- ─── DASHBOARD TAB ─── -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card purple">
+        <div class="stat-icon purple"><i class="fa-solid fa-house-chimney"></i></div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Total Listings</div>
+        <div class="stat-change up"><i class="fa-solid fa-arrow-trend-up"></i> All time</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon green"><i class="fa-solid fa-check-double"></i></div>
+        <div class="stat-value" id="stat-approved">—</div>
+        <div class="stat-label">Approved</div>
+        <div class="stat-change up"><i class="fa-solid fa-arrow-trend-up"></i> Live listings</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-icon yellow"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div class="stat-value" id="stat-pending">—</div>
+        <div class="stat-label">Pending Review</div>
+        <div class="stat-change"><i class="fa-solid fa-circle-dot"></i> Needs action</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon red"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-value" id="stat-reviews">—</div>
+        <div class="stat-label">Total Reviews</div>
+        <div class="stat-change up"><i class="fa-solid fa-arrow-trend-up"></i> All time</div>
+      </div>
+    </div>
+
+    <div class="analytics-grid">
+      <!-- Bar Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="section-title">Listings by Type</div>
+            <div class="section-subtitle">Distribution across property categories</div>
+          </div>
+        </div>
+        <div class="bar-chart" id="barChart"></div>
+      </div>
+      <!-- Donut -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="section-title">Status Overview</div>
+            <div class="section-subtitle">Approval breakdown</div>
+          </div>
+        </div>
+        <div class="donut-container">
+          <svg class="donut-svg" width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="54" fill="none" stroke="var(--surface3)" stroke-width="16"/>
+            <circle cx="70" cy="70" r="54" fill="none" stroke="var(--green)" stroke-width="16"
+              stroke-dasharray="339.3" stroke-dashoffset="339.3" id="donutApproved"
+              stroke-linecap="round" style="transition: stroke-dashoffset 1s ease;"/>
+            <circle cx="70" cy="70" r="54" fill="none" stroke="var(--yellow)" stroke-width="16"
+              stroke-dasharray="339.3" stroke-dashoffset="339.3" id="donutPending"
+              stroke-linecap="round" style="transition: stroke-dashoffset 1.2s ease;"/>
+          </svg>
+          <div class="donut-center">
+            <div class="donut-val" id="donutVal">0</div>
+            <div class="donut-sub">Total</div>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div><span class="legend-label">Approved</span><span class="legend-val" id="legendApproved">0</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div><span class="legend-label">Pending</span><span class="legend-val" id="legendPending">0</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div><span class="legend-label">Rejected</span><span class="legend-val" id="legendRejected">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div>
+          <div class="section-title">Recent Activity</div>
+          <div class="section-subtitle" style="font-size:0.78rem;color:var(--text2);margin-top:2px;">Latest platform events</div>
+        </div>
+      </div>
+      <div style="padding:0 20px 8px;">
+        <div class="activity-list" id="dashboardActivity"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PENDING APPROVALS TAB ─── -->
+  <div class="tab-content" id="tab-approvals">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Pending Approvals</div>
+        <div class="section-subtitle">Review and approve new property listings before they go live</div>
+      </div>
+      <button class="topbar-btn" onclick="approveAll()"><i class="fa-solid fa-check-double"></i> Approve All</button>
+    </div>
+    <div class="approval-grid" id="approvalGrid">
+      <div class="empty-state" style="grid-column:1/-1">
+        <i class="fa-solid fa-inbox"></i>
+        <h3>No pending listings</h3>
+        <p>All listings are reviewed. Check back later.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ALL LISTINGS TAB ─── -->
+  <div class="tab-content" id="tab-listings">
+    <div class="section-header">
+      <div>
+        <div class="section-title">All Listings</div>
+        <div class="section-subtitle">Manage, edit, and control all property listings</div>
+      </div>
+      <button class="topbar-btn primary" onclick="openAddListingModal()"><i class="fa-solid fa-plus"></i> Add Listing</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div class="search-field">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search listings..." id="listingSearch" oninput="filterListingsTable()">
+        </div>
+        <select class="filter-select" id="listingTypeFilter" onchange="filterListingsTable()">
+          <option value="all">All Types</option>
+          <option value="Single room">Single Room</option>
+          <option value="Bachelor Room">Bachelor Room</option>
+          <option value="2 Room">2 Room</option>
+          <option value="Flat Apartments">Apartments</option>
+        </select>
+        <select class="filter-select" id="listingStatusFilter" onchange="filterListingsTable()">
+          <option value="all">All Status</option>
+          <option value="approved">Approved</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+              <th>Property</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Reviews</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="listingsTableBody"></tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="listingTableCount">Loading...</span>
+        <div class="pagination" id="listingPagination"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── USERS TAB ─── -->
+  <div class="tab-content" id="tab-users">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Users</div>
+        <div class="section-subtitle">Monitor registered platform users</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div class="search-field">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search users..." id="userSearch" oninput="filterUsersTable()">
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Listings</th>
+              <th>Reviews</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span id="usersTableCount">—</span></div>
+    </div>
+  </div>
+
+  <!-- ─── REVIEWS TAB ─── -->
+  <div class="tab-content" id="tab-reviews">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Reviews</div>
+        <div class="section-subtitle">Moderate user submitted reviews</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Listing</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reviewsTableBody"></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span id="reviewsTableCount">—</span></div>
+    </div>
+  </div>
+
+  <!-- ─── ANALYTICS TAB ─── -->
+  <div class="tab-content" id="tab-analytics">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Analytics</div>
+        <div class="section-subtitle">Detailed platform performance metrics</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card purple">
+        <div class="stat-icon purple"><i class="fa-solid fa-house-chimney"></i></div>
+        <div class="stat-value" id="a-stat-total">—</div>
+        <div class="stat-label">Total Listings</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon green"><i class="fa-solid fa-check-double"></i></div>
+        <div class="stat-value" id="a-stat-approved">—</div>
+        <div class="stat-label">Approval Rate</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-icon yellow"><i class="fa-solid fa-star"></i></div>
+        <div class="stat-value" id="a-stat-avgrating">—</div>
+        <div class="stat-label">Avg Rating</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon red"><i class="fa-solid fa-money-bill-wave"></i></div>
+        <div class="stat-value" id="a-stat-avgprice">—</div>
+        <div class="stat-label">Avg Rent/mo</div>
+      </div>
+    </div>
+    <div class="analytics-grid" style="margin-top:0;">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="section-title">Price Distribution by Type</div>
+            <div class="section-subtitle">Average monthly rent per category</div>
+          </div>
+        </div>
+        <div class="bar-chart" id="analyticsBarChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="section-title">Top Locations</div>
+            <div class="section-subtitle">Areas with most listings</div>
+          </div>
+        </div>
+        <div id="topLocationsList" style="display:flex;flex-direction:column;gap:10px;margin-top:4px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── ACTIVITY LOG TAB ─── -->
+  <div class="tab-content" id="tab-activity">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Activity Log</div>
+        <div class="section-subtitle">Real-time platform event history</div>
+      </div>
+      <button class="topbar-btn" onclick="clearActivityLog()"><i class="fa-solid fa-trash"></i> Clear Log</button>
+    </div>
+    <div class="table-wrap">
+      <div style="padding:8px 20px 16px;">
+        <div class="activity-list" id="fullActivityLog"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SETTINGS TAB ─── -->
+  <div class="tab-content" id="tab-settings">
+    <div class="section-header">
+      <div>
+        <div class="section-title">Platform Settings</div>
+        <div class="section-subtitle">Configure KasiStay platform behaviour</div>
+      </div>
+    </div>
+    <div class="settings-grid">
+      <div class="settings-card">
+        <h3><i class="fa-solid fa-toggle-on"></i> Listing Controls</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Require Approval</div><div class="settings-desc">New listings need admin review</div></div>
+          <div class="toggle on" id="toggleApproval" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Auto-Verify Listings</div><div class="settings-desc">Grant verified badge automatically</div></div>
+          <div class="toggle" id="toggleVerify" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Allow Reviews</div><div class="settings-desc">Users can post reviews</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Show Pending on Site</div><div class="settings-desc">Show unapproved listings to users</div></div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3><i class="fa-solid fa-gear"></i> Price Settings</h3>
+        <div class="form-group">
+          <label class="form-label">Minimum Listing Price (R)</label>
+          <input class="form-input" type="number" value="500" placeholder="500">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Maximum Listing Price (R)</label>
+          <input class="form-input" type="number" value="30000" placeholder="30000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Price Filter Step (R)</label>
+          <input class="form-input" type="number" value="500" placeholder="500">
+        </div>
+        <button class="save-btn" onclick="showToast('Settings saved','success')"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+      </div>
+      <div class="settings-card">
+        <h3><i class="fa-solid fa-shield-halved"></i> Security</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Admin 2FA</div><div class="settings-desc">Two-factor authentication</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Login Alerts</div><div class="settings-desc">Email on new sign-ins</div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="form-group" style="margin-top:14px;">
+          <label class="form-label">Admin Email</label>
+          <input class="form-input" type="email" value="admin@kasistay.co.za">
+        </div>
+        <button class="save-btn" onclick="showToast('Security settings saved','success')"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      </div>
+      <div class="settings-card">
+        <h3><i class="fa-solid fa-palette"></i> Appearance</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Dark Mode (Site)</div><div class="settings-desc">Default theme for visitors</div></div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="form-group" style="margin-top:14px;">
+          <label class="form-label">Site Name</label>
+          <input class="form-input" type="text" value="KasiStay">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tagline</label>
+          <input class="form-input" type="text" value="Your Freedom starts with a home.">
+        </div>
+        <button class="save-btn" onclick="showToast('Appearance saved','success')"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EDIT LISTING MODAL ─── -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Edit Listing</h2>
+      <div class="modal-close" onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input class="form-input" id="editTitle" type="text">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Price (R/mo)</label>
+          <input class="form-input" id="editPrice" type="number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-input" id="editType">
+            <option value="Single room">Single Room</option>
+            <option value="Bachelor Room">Bachelor Room</option>
+            <option value="2 Room">2 Room</option>
+            <option value="Flat Apartments">Apartment</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input class="form-input" id="editLocation" type="text">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" id="editDesc" rows="3" style="resize:vertical;"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amenities (comma separated)</label>
+        <input class="form-input" id="editAmenities" type="text">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input" id="editStatus">
+          <option value="approved">Approved</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn-confirm" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DELETE CONFIRM MODAL ─── -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Delete Listing</h2>
+      <div class="modal-close" onclick="closeModal('deleteModal')"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;padding:16px 0;">
+        <div style="width:60px;height:60px;background:rgba(255,107,107,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.5rem;color:var(--red);">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;" id="deleteModalTitle">Delete this listing?</h3>
+        <p style="font-size:0.85rem;color:var(--text2);">This action is permanent and cannot be undone. The listing will be removed for all users.</p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+      <button class="btn-confirm danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PREVIEW MODAL ─── -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-head">
+      <h2>Listing Preview</h2>
+      <div class="modal-close" onclick="closeModal('previewModal')"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body" id="previewModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('previewModal')">Close</button>
+      <button class="btn-confirm green" id="previewApproveBtn"><i class="fa-solid fa-check"></i> Approve</button>
+      <button class="btn-confirm danger" id="previewRejectBtn"><i class="fa-solid fa-xmark"></i> Reject</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST CONTAINER ─── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ─── FIREBASE + LOGIC ─── -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, remove, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD_MtScfT0J5b8LbMm5oAATmw84plKWl-0",
+  authDomain: "kasistay-3b79c.firebaseapp.com",
+  projectId: "kasistay-3b79c",
+  storageBucket: "kasistay-3b79c.appspot.com",
+  messagingSenderId: "19156366595",
+  appId: "1:19156366595:web:c64b9bd6dfde5790e02536",
+  databaseURL: "https://kasistay-3b79c-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let allListings = [];
+let filteredListings = [];
+let activityLog = JSON.parse(localStorage.getItem('kasiAdminLog') || '[]');
+let editingId = null;
+let deletingId = null;
+let previewId = null;
+let currentPage = 1;
+const PAGE_SIZE = 10;
+
+// ─ HELPERS ─
+function getStatus(item) {
+  if (item.adminStatus) return item.adminStatus;
+  if (item.verified === true) return 'approved';
+  return 'pending';
+}
+
+function addActivity(type, msg) {
+  activityLog.unshift({ type, msg, time: Date.now() });
+  if (activityLog.length > 100) activityLog.pop();
+  localStorage.setItem('kasiAdminLog', JSON.stringify(activityLog));
+  renderActivityLog();
+}
+
+function starsHtml(n) {
+  let s = '';
+  for (let i = 1; i <= 5; i++) s += `<i class="fa-${i <= n ? 'solid' : 'regular'} fa-star" style="color:var(--yellow);font-size:0.75rem;"></i>`;
+  return s;
+}
+
+function avgRating(reviews) {
+  if (!reviews || !reviews.length) return 0;
+  return (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1);
+}
+
+// ─ TOAST ─
+window.showToast = function(msg, type = 'info') {
+  const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fa-solid ${icons[type]} toast-icon"></i><span class="toast-text">${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+};
+
+// ─ FIREBASE LISTENER ─
+onValue(ref(db, 'listings'), snapshot => {
+  allListings = [];
+  if (snapshot.exists()) {
+    snapshot.forEach(child => {
+      allListings.push({ id: child.key, ...child.val() });
+    });
+  }
+  filteredListings = [...allListings];
+  renderDashboard();
+  renderApprovals();
+  renderListingsTable();
+  renderReviewsTable();
+  renderAnalytics();
+  renderUsersTable();
+  updateBadges();
+});
+
+// ─ BADGES ─
+function updateBadges() {
+  const pending = allListings.filter(x => getStatus(x) === 'pending').length;
+  document.getElementById('pendingBadge').textContent = pending;
+  document.getElementById('pendingBadge').style.display = pending ? 'inline' : 'none';
+}
+
+// ─ DASHBOARD ─
+function renderDashboard() {
+  const total = allListings.length;
+  const approved = allListings.filter(x => getStatus(x) === 'approved').length;
+  const pending = allListings.filter(x => getStatus(x) === 'pending').length;
+  const rejected = allListings.filter(x => getStatus(x) === 'rejected').length;
+  const totalReviews = allListings.reduce((a, x) => a + (x.reviews ? x.reviews.length : 0), 0);
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-approved').textContent = approved;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('stat-reviews').textContent = totalReviews;
+
+  // Donut chart
+  const circ = 339.3;
+  const approvedPct = total ? approved / total : 0;
+  const pendingPct = total ? pending / total : 0;
+  document.getElementById('donutApproved').style.strokeDashoffset = circ * (1 - approvedPct);
+  document.getElementById('donutPending').style.strokeDashoffset = circ * (1 - (approvedPct + pendingPct));
+  document.getElementById('donutVal').textContent = total;
+  document.getElementById('legendApproved').textContent = approved;
+  document.getElementById('legendPending').textContent = pending;
+  document.getElementById('legendRejected').textContent = rejected;
+
+  // Bar chart - listings by type
+  const types = ['Single room', 'Bachelor Room', '2 Room', 'Flat Apartments'];
+  const labels = ['Single', 'Bachelor', '2 Room', 'Apartment'];
+  const counts = types.map(t => allListings.filter(x => x.type === t).length);
+  const maxCount = Math.max(...counts, 1);
+  const bc = document.getElementById('barChart');
+  bc.innerHTML = counts.map((c, i) => `
+    <div class="bar-group">
+      <div class="bar ${i % 2 === 0 ? 'purple' : 'green'}" style="height:${Math.max((c / maxCount) * 140, 4)}px;" title="${labels[i]}: ${c}"></div>
+      <div class="bar-label">${labels[i]}</div>
+    </div>
+  `).join('');
+
+  // Activity
+  renderActivityLog();
+}
+
+// ─ ACTIVITY LOG ─
+function renderActivityLog() {
+  const recentItems = activityLog.slice(0, 8);
+  const dotMap = { approve: 'green', reject: 'red', delete: 'red', edit: 'purple', add: 'green', review: 'yellow' };
+  const iconMap = { approve: 'fa-check', reject: 'fa-xmark', delete: 'fa-trash', edit: 'fa-pen', add: 'fa-plus', review: 'fa-star' };
+
+  const html = recentItems.length ? recentItems.map(a => `
+    <div class="activity-item">
+      <div class="activity-dot ${dotMap[a.type] || 'purple'}"><i class="fa-solid ${iconMap[a.type] || 'fa-bolt'}"></i></div>
+      <div>
+        <div class="activity-text">${a.msg}</div>
+        <div class="activity-time">${new Date(a.time).toLocaleString()}</div>
+      </div>
+    </div>
+  `).join('') : '<div class="empty-state" style="padding:32px;"><i class="fa-solid fa-bolt"></i><p>No activity yet</p></div>';
+
+  const da = document.getElementById('dashboardActivity');
+  if (da) da.innerHTML = html;
+  const fa = document.getElementById('fullActivityLog');
+  if (fa) fa.innerHTML = activityLog.length ? activityLog.map(a => `
+    <div class="activity-item">
+      <div class="activity-dot ${dotMap[a.type] || 'purple'}"><i class="fa-solid ${iconMap[a.type] || 'fa-bolt'}"></i></div>
+      <div>
+        <div class="activity-text">${a.msg}</div>
+        <div class="activity-time">${new Date(a.time).toLocaleString()}</div>
+      </div>
+    </div>
+  `).join('') : '<div class="empty-state" style="padding:32px;"><i class="fa-solid fa-bolt"></i><h3>No activity yet</h3></div>';
+}
+
+window.clearActivityLog = function() {
+  activityLog = [];
+  localStorage.removeItem('kasiAdminLog');
+  renderActivityLog();
+  showToast('Activity log cleared', 'info');
+};
+
+// ─ APPROVALS ─
+function renderApprovals() {
+  const pending = allListings.filter(x => getStatus(x) === 'pending');
+  const grid = document.getElementById('approvalGrid');
+  if (!pending.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <i class="fa-solid fa-inbox"></i><h3>No pending listings</h3><p>All listings are reviewed.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = pending.map((item, i) => `
+    <div class="approval-card highlight-new" style="animation-delay:${i*0.07}s" id="acard-${item.id}">
+      <div class="approval-img">
+        ${item.image ? `<img src="${item.image}" alt="${item.title}" loading="lazy">` : `<i class="fa-solid fa-image" style="font-size:2rem;"></i>`}
+      </div>
+      <div class="approval-body">
+        <div class="approval-top">
+          <div class="approval-price">R${(item.price||0).toLocaleString()}<span>/mo</span></div>
+          <span class="status-pill pending">pending</span>
+        </div>
+        <div class="approval-title">${item.title || 'Untitled'}</div>
+        <div class="approval-loc"><i class="fa-solid fa-location-dot"></i> ${item.location || 'No location'}</div>
+        <div class="approval-meta">
+          <span class="approval-tag">${item.type || 'Unknown'}</span>
+          ${(item.amenities||[]).slice(0,2).map(a=>`<span class="approval-tag">${a}</span>`).join('')}
+        </div>
+        <div class="approval-actions">
+          <button class="approval-btn approve" onclick="approveListing('${item.id}')"><i class="fa-solid fa-check"></i> Approve</button>
+          <button class="approval-btn reject" onclick="rejectListing('${item.id}')"><i class="fa-solid fa-xmark"></i> Reject</button>
+          <button class="approval-btn preview" onclick="previewListing('${item.id}')"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.approveListing = function(id) {
+  update(ref(db, `listings/${id}`), { adminStatus: 'approved', verified: true }).then(() => {
+    const item = allListings.find(x => x.id === id);
+    addActivity('approve', `Approved listing: <strong>${item?.title || id}</strong>`);
+    showToast('Listing approved and now live!', 'success');
+    animateCardOut(`acard-${id}`);
+  });
+};
+
+window.rejectListing = function(id) {
+  update(ref(db, `listings/${id}`), { adminStatus: 'rejected', verified: false }).then(() => {
+    const item = allListings.find(x => x.id === id);
+    addActivity('reject', `Rejected listing: <strong>${item?.title || id}</strong>`);
+    showToast('Listing rejected', 'error');
+    animateCardOut(`acard-${id}`);
+  });
+};
+
+function animateCardOut(cardId) {
+  const card = document.getElementById(cardId);
+  if (card) {
+    card.style.transition = 'all 0.35s ease';
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.9)';
+    setTimeout(() => card.remove(), 350);
+  }
+}
+
+window.approveAll = function() {
+  const pending = allListings.filter(x => getStatus(x) === 'pending');
+  if (!pending.length) return showToast('No pending listings', 'info');
+  Promise.all(pending.map(item => update(ref(db, `listings/${item.id}`), { adminStatus: 'approved', verified: true })))
+    .then(() => {
+      addActivity('approve', `Bulk approved <strong>${pending.length}</strong> listings`);
+      showToast(`${pending.length} listings approved!`, 'success');
+    });
+};
+
+// ─ LISTINGS TABLE ─
+function renderListingsTable() {
+  const search = document.getElementById('listingSearch')?.value?.toLowerCase() || '';
+  const typeF = document.getElementById('listingTypeFilter')?.value || 'all';
+  const statusF = document.getElementById('listingStatusFilter')?.value || 'all';
+
+  filteredListings = allListings.filter(item => {
+    const matchSearch = !search || item.title?.toLowerCase().includes(search) || item.location?.toLowerCase().includes(search);
+    const matchType = typeF === 'all' || item.type === typeF;
+    const matchStatus = statusF === 'all' || getStatus(item) === statusF;
+    return matchSearch && matchType && matchStatus;
+  });
+
+  const total = filteredListings.length;
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page = filteredListings.slice(start, start + PAGE_SIZE);
+
+  const tbody = document.getElementById('listingsTableBody');
+  tbody.innerHTML = page.length ? page.map(item => {
+    const status = getStatus(item);
+    const reviews = item.reviews || [];
+    return `
+      <tr>
+        <td><input type="checkbox" class="row-check" data-id="${item.id}"></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="listing-thumb">
+              ${item.image ? `<img src="${item.image}" alt="">` : '<i class="fa-solid fa-image"></i>'}
+            </div>
+            <div>
+              <div class="listing-name">${item.title || 'Untitled'}</div>
+              <div class="listing-loc">${item.location || '—'}</div>
+            </div>
+          </div>
+        </td>
+        <td><span style="font-size:0.8rem;">${item.type || '—'}</span></td>
+        <td><strong>R${(item.price||0).toLocaleString()}</strong><span style="font-size:0.72rem;color:var(--text2);">/mo</span></td>
+        <td style="font-size:0.82rem;color:var(--text2);">${item.location || '—'}</td>
+        <td><span class="status-pill ${status}">${status}</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:4px;">
+            ${starsHtml(Math.round(avgRating(reviews)))}
+            <span style="font-size:0.72rem;color:var(--text2);">(${reviews.length})</span>
+          </div>
+        </td>
+        <td>
+          <div class="action-btns">
+            <div class="action-btn preview" title="Preview" onclick="previewListing('${item.id}')"><i class="fa-solid fa-eye"></i></div>
+            <div class="action-btn edit" title="Edit" onclick="openEditModal('${item.id}')"><i class="fa-solid fa-pen"></i></div>
+            ${status==='pending' ? `<div class="action-btn approve" title="Approve" onclick="approveListing('${item.id}')"><i class="fa-solid fa-check"></i></div>` : ''}
+            ${status==='approved' ? `<div class="action-btn reject" title="Reject" onclick="rejectListing('${item.id}')"><i class="fa-solid fa-xmark"></i></div>` : ''}
+            <div class="action-btn delete" title="Delete" onclick="openDeleteModal('${item.id}')"><i class="fa-solid fa-trash"></i></div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('') : `<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h3>No listings found</h3><p>Try adjusting your search filters</p></div></td></tr>`;
+
+  document.getElementById('listingTableCount').textContent = `Showing ${Math.min(start+1, total)}–${Math.min(start+PAGE_SIZE, total)} of ${total} listings`;
+
+  // Pagination
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const pagDiv = document.getElementById('listingPagination');
+  pagDiv.innerHTML = '';
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement('button');
+    btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+    btn.textContent = i;
+    btn.onclick = () => { currentPage = i; renderListingsTable(); };
+    pagDiv.appendChild(btn);
+  }
+}
+
+window.filterListingsTable = function() { currentPage = 1; renderListingsTable(); };
+
+window.toggleSelectAll = function() {
+  const checked = document.getElementById('selectAll').checked;
+  document.querySelectorAll('.row-check').forEach(cb => cb.checked = checked);
+};
+
+// ─ EDIT MODAL ─
+window.openEditModal = function(id) {
+  const item = allListings.find(x => x.id === id);
+  if (!item) return;
+  editingId = id;
+  document.getElementById('editTitle').value = item.title || '';
+  document.getElementById('editPrice').value = item.price || '';
+  document.getElementById('editType').value = item.type || 'Single room';
+  document.getElementById('editLocation').value = item.location || '';
+  document.getElementById('editDesc').value = item.desc || '';
+  document.getElementById('editAmenities').value = (item.amenities || []).join(', ');
+  document.getElementById('editStatus').value = getStatus(item);
+  document.getElementById('editModal').classList.add('open');
+};
+
+window.saveEdit = function() {
+  if (!editingId) return;
+  const amenitiesStr = document.getElementById('editAmenities').value;
+  const status = document.getElementById('editStatus').value;
+  const updates = {
+    title: document.getElementById('editTitle').value,
+    price: Number(document.getElementById('editPrice').value),
+    type: document.getElementById('editType').value,
+    location: document.getElementById('editLocation').value,
+    desc: document.getElementById('editDesc').value,
+    amenities: amenitiesStr ? amenitiesStr.split(',').map(a=>a.trim()).filter(Boolean) : [],
+    adminStatus: status,
+    verified: status === 'approved'
+  };
+  update(ref(db, `listings/${editingId}`), updates).then(() => {
+    addActivity('edit', `Edited listing: <strong>${updates.title}</strong>`);
+    showToast('Listing updated!', 'success');
+    closeModal('editModal');
+  }).catch(e => showToast('Error: ' + e.message, 'error'));
+};
+
+// ─ DELETE MODAL ─
+window.openDeleteModal = function(id) {
+  deletingId = id;
+  const item = allListings.find(x => x.id === id);
+  document.getElementById('deleteModalTitle').textContent = `Delete "${item?.title || 'this listing'}"?`;
+  document.getElementById('deleteModal').classList.add('open');
+};
+
+window.confirmDelete = function() {
+  if (!deletingId) return;
+  const item = allListings.find(x => x.id === deletingId);
+  remove(ref(db, `listings/${deletingId}`)).then(() => {
+    addActivity('delete', `Deleted listing: <strong>${item?.title || deletingId}</strong>`);
+    showToast('Listing deleted', 'error');
+    closeModal('deleteModal');
+  });
+};
+
+// ─ PREVIEW MODAL ─
+window.previewListing = function(id) {
+  const item = allListings.find(x => x.id === id);
+  if (!item) return;
+  previewId = id;
+  const reviews = item.reviews || [];
+  const status = getStatus(item);
+  document.getElementById('previewModalBody').innerHTML = `
+    ${item.image ? `<img src="${item.image}" style="width:100%;height:220px;object-fit:cover;border-radius:12px;margin-bottom:16px;">` : ''}
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;">${item.title}</div>
+        <div style="color:var(--text2);font-size:0.82rem;margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.location}</div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--accent);">R${(item.price||0).toLocaleString()}<span style="font-size:0.75rem;color:var(--text2);font-family:'DM Sans';">/mo</span></div>
+        <span class="status-pill ${status}" style="margin-top:4px;display:inline-flex;">${status}</span>
+      </div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:12px;">${item.desc || 'No description.'}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+      ${(item.amenities||[]).map(a=>`<span style="font-size:0.7rem;font-weight:600;padding:3px 9px;background:var(--surface3);border-radius:6px;color:var(--text2);">${a}</span>`).join('')}
+    </div>
+    <div style="font-size:0.82rem;color:var(--text2);">${reviews.length} review${reviews.length !== 1 ? 's' : ''} · Avg: ${avgRating(reviews)} ★</div>
+  `;
+  document.getElementById('previewApproveBtn').onclick = () => { approveListing(id); closeModal('previewModal'); };
+  document.getElementById('previewRejectBtn').onclick = () => { rejectListing(id); closeModal('previewModal'); };
+  document.getElementById('previewModal').classList.add('open');
+};
+
+// ─ REVIEWS TABLE ─
+function renderReviewsTable() {
+  const allReviews = [];
+  allListings.forEach(item => {
+    (item.reviews || []).forEach((r, i) => allReviews.push({ ...r, listingId: item.id, listingTitle: item.title, reviewIndex: i }));
+  });
+  const tbody = document.getElementById('reviewsTableBody');
+  tbody.innerHTML = allReviews.length ? allReviews.map(r => `
+    <tr>
+      <td style="font-weight:600;font-size:0.82rem;">${r.listingTitle || 'Unknown'}</td>
+      <td><div style="display:flex;gap:2px;">${starsHtml(r.rating)}</div></td>
+      <td style="max-width:260px;font-size:0.82rem;color:var(--text2);">${r.comment || '—'}</td>
+      <td style="font-size:0.75rem;color:var(--text2);">${r.timestamp ? new Date(r.timestamp).toLocaleDateString() : '—'}</td>
+      <td>
+        <div class="action-btns">
+          <div class="action-btn delete" title="Delete review" onclick="deleteReview('${r.listingId}',${r.reviewIndex})"><i class="fa-solid fa-trash"></i></div>
+        </div>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="5"><div class="empty-state"><i class="fa-regular fa-star"></i><h3>No reviews yet</h3></div></td></tr>`;
+  document.getElementById('reviewsTableCount').textContent = `${allReviews.length} total reviews`;
+}
+
+window.deleteReview = function(listingId, reviewIndex) {
+  const item = allListings.find(x => x.id === listingId);
+  if (!item) return;
+  const reviews = [...(item.reviews || [])];
+  reviews.splice(reviewIndex, 1);
+  update(ref(db, `listings/${listingId}`), { reviews }).then(() => {
+    addActivity('review', `Deleted review on: <strong>${item.title}</strong>`);
+    showToast('Review deleted', 'info');
+  });
+};
+
+// ─ USERS TABLE ─
+function renderUsersTable() {
+  // Aggregate users from listing data (owner names)
+  const userMap = {};
+  allListings.forEach(item => {
+    const name = item.ownerName || 'Anonymous';
+    if (!userMap[name]) userMap[name] = { name, listings: 0, reviews: 0 };
+    userMap[name].listings++;
+    userMap[name].reviews += (item.reviews || []).length;
+  });
+  const users = Object.values(userMap);
+  const search = document.getElementById('userSearch')?.value?.toLowerCase() || '';
+  const filtered = users.filter(u => u.name.toLowerCase().includes(search));
+
+  const tbody = document.getElementById('usersTableBody');
+  tbody.innerHTML = filtered.length ? filtered.map(u => `
+    <tr>
+      <td>
+        <div class="user-row-info">
+          <div class="user-mini-avatar">${u.name.charAt(0).toUpperCase()}</div>
+          <div>
+            <div class="user-uname">${u.name}</div>
+            <div class="user-email">Via listing</div>
+          </div>
+        </div>
+      </td>
+      <td>${u.listings}</td>
+      <td>${u.reviews}</td>
+      <td style="font-size:0.75rem;color:var(--text2);">—</td>
+      <td>
+        <div class="action-btns">
+          <div class="action-btn" title="View Listings" onclick="filterByUser('${u.name}')"><i class="fa-solid fa-eye"></i></div>
+        </div>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-users"></i><h3>No users found</h3></div></td></tr>`;
+  document.getElementById('usersTableCount').textContent = `${filtered.length} users`;
+}
+
+window.filterUsersTable = function() { renderUsersTable(); };
+
+window.filterByUser = function(name) {
+  switchTab('listings', document.querySelector('[onclick*="listings"]'));
+  document.getElementById('listingSearch').value = name;
+  filterListingsTable();
+};
+
+// ─ ANALYTICS ─
+function renderAnalytics() {
+  const total = allListings.length;
+  const approved = allListings.filter(x => getStatus(x) === 'approved').length;
+  const approvalRate = total ? ((approved / total) * 100).toFixed(0) + '%' : '0%';
+  const allReviews = allListings.flatMap(x => x.reviews || []);
+  const avgR = allReviews.length ? (allReviews.reduce((a, r) => a + r.rating, 0) / allReviews.length).toFixed(1) : '—';
+  const avgPrice = total ? 'R' + Math.round(allListings.reduce((a, x) => a + (x.price || 0), 0) / total).toLocaleString() : '—';
+
+  document.getElementById('a-stat-total').textContent = total;
+  document.getElementById('a-stat-approved').textContent = approvalRate;
+  document.getElementById('a-stat-avgrating').textContent = avgR;
+  document.getElementById('a-stat-avgprice').textContent = avgPrice;
+
+  // Avg price by type bar chart
+  const types = ['Single room', 'Bachelor Room', '2 Room', 'Flat Apartments'];
+  const labels = ['Single', 'Bachelor', '2 Room', 'Apt'];
+  const avgs = types.map(t => {
+    const items = allListings.filter(x => x.type === t);
+    return items.length ? Math.round(items.reduce((a, x) => a + (x.price || 0), 0) / items.length) : 0;
+  });
+  const maxAvg = Math.max(...avgs, 1);
+  document.getElementById('analyticsBarChart').innerHTML = avgs.map((v, i) => `
+    <div class="bar-group">
+      <div class="bar ${i % 2 === 0 ? 'purple' : 'green'}" style="height:${Math.max((v / maxAvg) * 140, 4)}px;" title="${labels[i]}: R${v.toLocaleString()}"></div>
+      <div class="bar-label">${labels[i]}</div>
+    </div>
+  `).join('');
+
+  // Top locations
+  const locMap = {};
+  allListings.forEach(x => {
+    const loc = (x.location || 'Unknown').split(',')[0].trim();
+    locMap[loc] = (locMap[loc] || 0) + 1;
+  });
+  const topLocs = Object.entries(locMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const maxLoc = topLocs[0]?.[1] || 1;
+  document.getElementById('topLocationsList').innerHTML = topLocs.map(([loc, cnt]) => `
+    <div>
+      <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:5px;">
+        <span style="font-weight:600;">${loc}</span>
+        <span style="color:var(--text2);">${cnt} listing${cnt !== 1 ? 's' : ''}</span>
+      </div>
+      <div style="height:6px;background:var(--surface3);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${(cnt/maxLoc)*100}%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width 1s ease;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─ MODALS ─
+window.closeModal = function(id) {
+  document.getElementById(id).classList.remove('open');
+};
+
+window.openAddListingModal = function() {
+  showToast('Use the "List a Room" button on the main site to add listings', 'info');
+};
+
+// ─ REFRESH ─
+window.refreshData = function() {
+  showToast('Data refreshed', 'success');
+};
+
+// ─ INIT ─
+renderActivityLog();
+</script>
+
+<script>
+// ─ NAV & UI (non-module) ─
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = {
+    dashboard: ['Dashboard', "Welcome back — here's what's happening"],
+    approvals: ['Pending Approvals', 'Review listings before they go live'],
+    listings: ['All Listings', 'Manage, edit, and control all properties'],
+    users: ['Users', 'Monitor registered platform users'],
+    reviews: ['Reviews', 'Moderate submitted reviews'],
+    analytics: ['Analytics', 'Detailed platform performance metrics'],
+    activity: ['Activity Log', 'Real-time platform event history'],
+    settings: ['Settings', 'Configure KasiStay platform behaviour'],
+  };
+  const [title, sub] = titles[tab] || ['KasiStay Admin', ''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSubtitle').textContent = sub;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (window.innerWidth <= 900) closeSidebar();
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlayBg').classList.add('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlayBg').classList.remove('open');
+}
+</script>
+</body>
+</html>
