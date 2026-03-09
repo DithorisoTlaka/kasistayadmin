@@ -21,7 +21,6 @@
   --accent4: #ffd166;
   --text: #f0f0f5;
   --text2: #8888a0;
-  --text3: #5555708;
   --green: #00e5b4;
   --red: #ff6b6b;
   --yellow: #ffd166;
@@ -29,6 +28,67 @@
   --radius: 16px;
   --radius-sm: 10px;
   --shadow: 0 4px 30px rgba(0,0,0,0.4);
+}
+
+/* ─── LIGHT MODE ─── */
+body.light-mode {
+  --bg: #f4f4f8;
+  --surface: #ffffff;
+  --surface2: #f0f0f5;
+  --surface3: #e6e6ef;
+  --border: rgba(0,0,0,0.08);
+  --border-bright: rgba(0,0,0,0.14);
+  --text: #12121a;
+  --text2: #6666808;
+  --shadow: 0 4px 30px rgba(0,0,0,0.1);
+}
+body.light-mode {
+  --text2: #66668a;
+}
+body.light-mode::before {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(124,108,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(0,229,180,0.04) 0%, transparent 60%);
+}
+body.light-mode .sidebar {
+  background: #ffffff;
+  border-right-color: rgba(0,0,0,0.08);
+}
+body.light-mode .topbar {
+  background: rgba(244,244,248,0.85);
+}
+body.light-mode .notif-btn,
+body.light-mode .topbar-btn:not(.primary),
+body.light-mode .hamburger {
+  background: #ffffff;
+}
+body.light-mode .filter-select,
+body.light-mode .search-field {
+  background: #ffffff;
+}
+body.light-mode tbody tr:hover {
+  background: #f7f7fb;
+}
+body.light-mode .approval-card,
+body.light-mode .chart-card,
+body.light-mode .settings-card,
+body.light-mode .table-wrap,
+body.light-mode .stat-card {
+  background: #ffffff;
+}
+body.light-mode .modal {
+  background: #ffffff;
+}
+body.light-mode .action-btn {
+  background: #f0f0f5;
+}
+body.light-mode .form-input {
+  background: #f0f0f5;
+  color: #12121a;
+}
+body.light-mode .toggle {
+  background: #dddde8;
+  border-color: #ccccda;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -39,9 +99,9 @@ body {
   min-height: 100vh;
   display: flex;
   overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
-/* ─── GRID NOISE BACKGROUND ─── */
 body::before {
   content: '';
   position: fixed;
@@ -64,7 +124,7 @@ body::before {
   position: fixed;
   left: 0; top: 0; bottom: 0;
   z-index: 100;
-  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), background 0.3s;
 }
 
 .sidebar-logo {
@@ -215,6 +275,7 @@ body::before {
   position: sticky;
   top: 0;
   z-index: 50;
+  transition: background 0.3s;
 }
 .topbar-left h1 {
   font-family: 'Syne', sans-serif;
@@ -245,6 +306,24 @@ body::before {
   color: white;
 }
 .topbar-btn.primary:hover { background: #9080ff; }
+
+/* ─── DARK MODE TOGGLE BUTTON ─── */
+.darkmode-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-bright);
+  background: var(--surface2);
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.darkmode-btn:hover { background: var(--surface3); color: var(--text); }
+.darkmode-btn i { font-size: 0.85rem; }
 
 .notif-btn {
   width: 38px; height: 38px;
@@ -289,7 +368,7 @@ body::before {
   padding: 20px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: transform 0.2s, border-color 0.2s, background 0.3s;
   animation: fadeUp 0.4s ease backwards;
 }
 .stat-card:hover { transform: translateY(-2px); border-color: var(--border-bright); }
@@ -358,6 +437,7 @@ body::before {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  transition: background 0.3s;
 }
 .table-toolbar {
   display: flex;
@@ -378,6 +458,7 @@ body::before {
   padding: 8px 14px;
   flex: 1;
   max-width: 320px;
+  transition: background 0.3s;
 }
 .search-field i { color: var(--text2); font-size: 0.85rem; }
 .search-field input {
@@ -401,6 +482,7 @@ body::before {
   font-size: 0.85rem;
   cursor: pointer;
   outline: none;
+  transition: background 0.3s;
 }
 .filter-select option { background: var(--surface2); }
 
@@ -433,6 +515,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   color: var(--text2);
   font-size: 0.7rem;
   flex-shrink: 0;
+  overflow: hidden;
 }
 .listing-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 .listing-name { font-weight: 600; font-size: 0.875rem; }
@@ -525,6 +608,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   background: var(--surface3);
   display: flex; align-items: center; justify-content: center;
   color: var(--text2);
+  overflow: hidden;
 }
 .approval-img img { width: 100%; height: 100%; object-fit: cover; }
 .approval-body { padding: 16px; }
@@ -585,6 +669,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
+  transition: background 0.3s;
 }
 .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .chart-canvas { width: 100%; height: 200px; position: relative; }
@@ -653,6 +738,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 22px;
+  transition: background 0.3s;
 }
 .settings-card h3 {
   font-family: 'Syne', sans-serif;
@@ -711,7 +797,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   font-family: 'DM Sans', sans-serif;
   font-size: 0.875rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, background 0.3s, color 0.3s;
 }
 .form-input:focus { border-color: var(--accent); }
 .save-btn {
@@ -728,6 +814,100 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   display: flex; align-items: center; gap: 6px;
 }
 .save-btn:hover { background: #9080ff; transform: translateY(-1px); }
+
+/* ─── IMAGE UPLOAD AREA ─── */
+.img-upload-area {
+  border: 2px dashed var(--border-bright);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 10px;
+}
+.img-upload-area:hover { border-color: var(--accent); background: rgba(124,108,255,0.04); }
+.img-upload-area i { font-size: 1.5rem; color: var(--text2); margin-bottom: 6px; display: block; }
+.img-upload-area span { font-size: 0.78rem; color: var(--text2); }
+.img-preview-wrap {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 10px;
+  display: none;
+}
+.img-preview-wrap img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  display: block;
+}
+.img-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.img-preview-wrap:hover .img-preview-overlay { opacity: 1; }
+.img-preview-overlay button {
+  background: rgba(255,107,107,0.9);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+}
+.img-url-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.img-url-row .form-input { margin-bottom: 0; flex: 1; }
+.img-url-btn {
+  padding: 10px 14px;
+  background: var(--surface3);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+  color: var(--text2);
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.img-url-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.img-source-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.img-tab {
+  flex: 1;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid var(--border-bright);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.img-tab.active { background: rgba(124,108,255,0.15); color: var(--accent); border-color: rgba(124,108,255,0.3); }
+.img-tab-panel { display: none; }
+.img-tab-panel.active { display: block; }
 
 /* ─── MODAL ─── */
 .modal-overlay {
@@ -751,6 +931,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   flex-direction: column;
   overflow: hidden;
   animation: modalIn 0.3s cubic-bezier(0.34,1.2,0.64,1);
+  transition: background 0.3s;
 }
 @keyframes modalIn {
   from { opacity: 0; transform: scale(0.93) translateY(20px); }
@@ -901,6 +1082,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   .topbar { padding: 16px 20px; }
   .tab-content { padding: 20px; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  .darkmode-label { display: none; }
 }
 @media (max-width: 600px) {
   .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -928,19 +1110,16 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
 }
 .overlay-bg.open { display: block; }
 
-/* Checkbox */
 input[type=checkbox] {
   width: 16px; height: 16px;
   accent-color: var(--accent);
   cursor: pointer;
 }
 
-/* Scroll */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
 
-/* Anim delays for stat cards */
 .stat-card:nth-child(1) { animation-delay: 0s; }
 .stat-card:nth-child(2) { animation-delay: 0.06s; }
 .stat-card:nth-child(3) { animation-delay: 0.12s; }
@@ -1024,6 +1203,11 @@ input[type=checkbox] {
       </div>
     </div>
     <div class="topbar-right">
+      <!-- ─── DARK MODE TOGGLE ─── -->
+      <button class="darkmode-btn" id="darkmodeBtn" onclick="toggleDarkMode()" title="Toggle light/dark mode">
+        <i class="fa-solid fa-moon" id="darkmodeIcon"></i>
+        <span class="darkmode-label" id="darkmodeLabel">Light Mode</span>
+      </button>
       <div class="notif-btn" title="Notifications"><i class="fa-solid fa-bell"></i><div class="notif-dot"></div></div>
       <button class="topbar-btn primary" onclick="refreshData()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
     </div>
@@ -1059,7 +1243,6 @@ input[type=checkbox] {
     </div>
 
     <div class="analytics-grid">
-      <!-- Bar Chart -->
       <div class="chart-card">
         <div class="chart-header">
           <div>
@@ -1069,7 +1252,6 @@ input[type=checkbox] {
         </div>
         <div class="bar-chart" id="barChart"></div>
       </div>
-      <!-- Donut -->
       <div class="chart-card">
         <div class="chart-header">
           <div>
@@ -1100,7 +1282,6 @@ input[type=checkbox] {
       </div>
     </div>
 
-    <!-- Recent Activity -->
     <div class="table-wrap">
       <div class="table-toolbar">
         <div>
@@ -1376,6 +1557,10 @@ input[type=checkbox] {
       <div class="settings-card">
         <h3><i class="fa-solid fa-palette"></i> Appearance</h3>
         <div class="settings-row">
+          <div><div class="settings-label">Dark Mode (Admin)</div><div class="settings-desc">Toggle admin panel theme</div></div>
+          <div class="toggle" id="settingsDarkToggle" onclick="toggleDarkMode()"></div>
+        </div>
+        <div class="settings-row">
           <div><div class="settings-label">Dark Mode (Site)</div><div class="settings-desc">Default theme for visitors</div></div>
           <div class="toggle" onclick="this.classList.toggle('on')"></div>
         </div>
@@ -1401,6 +1586,44 @@ input[type=checkbox] {
       <div class="modal-close" onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></div>
     </div>
     <div class="modal-body">
+      <!-- ─── IMAGE SECTION ─── -->
+      <div class="form-group">
+        <label class="form-label"><i class="fa-solid fa-image" style="margin-right:5px;color:var(--accent);"></i>Property Image</label>
+
+        <!-- Current image preview -->
+        <div class="img-preview-wrap" id="editImgPreviewWrap">
+          <img id="editImgPreview" src="" alt="Property image">
+          <div class="img-preview-overlay">
+            <button onclick="clearEditImage()"><i class="fa-solid fa-trash"></i> Remove Image</button>
+          </div>
+        </div>
+
+        <!-- Tab switcher -->
+        <div class="img-source-tabs">
+          <button class="img-tab active" id="imgTabUrl" onclick="switchImgTab('url')"><i class="fa-solid fa-link"></i> URL</button>
+          <button class="img-tab" id="imgTabUpload" onclick="switchImgTab('upload')"><i class="fa-solid fa-upload"></i> Upload File</button>
+        </div>
+
+        <!-- URL panel -->
+        <div class="img-tab-panel active" id="imgPanelUrl">
+          <div class="img-url-row">
+            <input class="form-input" id="editImageUrl" type="url" placeholder="https://example.com/image.jpg" oninput="previewImageFromUrl(this.value)">
+            <button class="img-url-btn" onclick="applyImageUrl()"><i class="fa-solid fa-check"></i> Apply</button>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text2);">Paste any direct image URL — changes preview in real time</div>
+        </div>
+
+        <!-- Upload panel -->
+        <div class="img-tab-panel" id="imgPanelUpload">
+          <label class="img-upload-area" for="editImageFile" id="imgUploadArea">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Click to choose a file, or drag &amp; drop</span>
+            <span style="font-size:0.68rem;margin-top:4px;display:block;">JPG, PNG, WEBP — max 5 MB</span>
+          </label>
+          <input type="file" id="editImageFile" accept="image/*" style="display:none;" onchange="handleImageFileChange(this)">
+        </div>
+      </div>
+
       <div class="form-group">
         <label class="form-label">Title</label>
         <input class="form-input" id="editTitle" type="text">
@@ -1517,6 +1740,9 @@ let previewId = null;
 let currentPage = 1;
 const PAGE_SIZE = 10;
 
+// Holds the pending new image value while editing
+let pendingEditImage = null;
+
 // ─ HELPERS ─
 function getStatus(item) {
   if (item.adminStatus) return item.adminStatus;
@@ -1590,7 +1816,6 @@ function renderDashboard() {
   document.getElementById('stat-pending').textContent = pending;
   document.getElementById('stat-reviews').textContent = totalReviews;
 
-  // Donut chart
   const circ = 339.3;
   const approvedPct = total ? approved / total : 0;
   const pendingPct = total ? pending / total : 0;
@@ -1601,7 +1826,6 @@ function renderDashboard() {
   document.getElementById('legendPending').textContent = pending;
   document.getElementById('legendRejected').textContent = rejected;
 
-  // Bar chart - listings by type
   const types = ['Single room', 'Bachelor Room', '2 Room', 'Flat Apartments'];
   const labels = ['Single', 'Bachelor', '2 Room', 'Apartment'];
   const counts = types.map(t => allListings.filter(x => x.type === t).length);
@@ -1614,7 +1838,6 @@ function renderDashboard() {
     </div>
   `).join('');
 
-  // Activity
   renderActivityLog();
 }
 
@@ -1789,7 +2012,6 @@ function renderListingsTable() {
 
   document.getElementById('listingTableCount').textContent = `Showing ${Math.min(start+1, total)}–${Math.min(start+PAGE_SIZE, total)} of ${total} listings`;
 
-  // Pagination
   const totalPages = Math.ceil(total / PAGE_SIZE);
   const pagDiv = document.getElementById('listingPagination');
   pagDiv.innerHTML = '';
@@ -1814,6 +2036,21 @@ window.openEditModal = function(id) {
   const item = allListings.find(x => x.id === id);
   if (!item) return;
   editingId = id;
+  pendingEditImage = item.image || null;
+
+  // Populate image preview
+  if (item.image) {
+    showEditImagePreview(item.image);
+  } else {
+    clearEditImagePreview();
+  }
+
+  // Reset URL input
+  document.getElementById('editImageUrl').value = item.image || '';
+
+  // Reset to URL tab
+  switchImgTab('url');
+
   document.getElementById('editTitle').value = item.title || '';
   document.getElementById('editPrice').value = item.price || '';
   document.getElementById('editType').value = item.type || 'Single room';
@@ -1824,10 +2061,90 @@ window.openEditModal = function(id) {
   document.getElementById('editModal').classList.add('open');
 };
 
+function showEditImagePreview(src) {
+  const wrap = document.getElementById('editImgPreviewWrap');
+  const img = document.getElementById('editImgPreview');
+  img.src = src;
+  wrap.style.display = 'block';
+  pendingEditImage = src;
+}
+
+function clearEditImagePreview() {
+  const wrap = document.getElementById('editImgPreviewWrap');
+  wrap.style.display = 'none';
+  document.getElementById('editImgPreview').src = '';
+  pendingEditImage = null;
+}
+
+window.clearEditImage = function() {
+  clearEditImagePreview();
+  document.getElementById('editImageUrl').value = '';
+  document.getElementById('editImageFile').value = '';
+  showToast('Image removed — save to apply', 'info');
+};
+
+window.previewImageFromUrl = function(url) {
+  if (!url) return;
+  // lightweight debounce via direct call; show preview optimistically
+  showEditImagePreview(url);
+};
+
+window.applyImageUrl = function() {
+  const url = document.getElementById('editImageUrl').value.trim();
+  if (!url) return showToast('Please enter an image URL', 'info');
+  showEditImagePreview(url);
+  showToast('Image preview updated', 'success');
+};
+
+window.switchImgTab = function(tab) {
+  document.getElementById('imgTabUrl').classList.toggle('active', tab === 'url');
+  document.getElementById('imgTabUpload').classList.toggle('active', tab === 'upload');
+  document.getElementById('imgPanelUrl').classList.toggle('active', tab === 'url');
+  document.getElementById('imgPanelUpload').classList.toggle('active', tab === 'upload');
+};
+
+window.handleImageFileChange = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) return showToast('File too large (max 5 MB)', 'error');
+  const reader = new FileReader();
+  reader.onload = e => {
+    showEditImagePreview(e.target.result);
+    showToast('Image loaded — save to apply', 'success');
+  };
+  reader.readAsDataURL(file);
+};
+
+// Drag & drop support
+document.getElementById('imgUploadArea').addEventListener('dragover', e => {
+  e.preventDefault();
+  e.currentTarget.style.borderColor = 'var(--accent)';
+  e.currentTarget.style.background = 'rgba(124,108,255,0.06)';
+});
+document.getElementById('imgUploadArea').addEventListener('dragleave', e => {
+  e.currentTarget.style.borderColor = '';
+  e.currentTarget.style.background = '';
+});
+document.getElementById('imgUploadArea').addEventListener('drop', e => {
+  e.preventDefault();
+  e.currentTarget.style.borderColor = '';
+  e.currentTarget.style.background = '';
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return showToast('Please drop an image file', 'error');
+  if (file.size > 5 * 1024 * 1024) return showToast('File too large (max 5 MB)', 'error');
+  const reader = new FileReader();
+  reader.onload = ev => {
+    showEditImagePreview(ev.target.result);
+    showToast('Image loaded — save to apply', 'success');
+  };
+  reader.readAsDataURL(file);
+});
+
 window.saveEdit = function() {
   if (!editingId) return;
   const amenitiesStr = document.getElementById('editAmenities').value;
   const status = document.getElementById('editStatus').value;
+
   const updates = {
     title: document.getElementById('editTitle').value,
     price: Number(document.getElementById('editPrice').value),
@@ -1838,6 +2155,15 @@ window.saveEdit = function() {
     adminStatus: status,
     verified: status === 'approved'
   };
+
+  // Apply image change
+  const previewSrc = document.getElementById('editImgPreview').src;
+  if (document.getElementById('editImgPreviewWrap').style.display !== 'none' && previewSrc) {
+    updates.image = previewSrc;
+  } else {
+    updates.image = null;
+  }
+
   update(ref(db, `listings/${editingId}`), updates).then(() => {
     addActivity('edit', `Edited listing: <strong>${updates.title}</strong>`);
     showToast('Listing updated!', 'success');
@@ -1929,7 +2255,6 @@ window.deleteReview = function(listingId, reviewIndex) {
 
 // ─ USERS TABLE ─
 function renderUsersTable() {
-  // Aggregate users from listing data (owner names)
   const userMap = {};
   allListings.forEach(item => {
     const name = item.ownerName || 'Anonymous';
@@ -1988,7 +2313,6 @@ function renderAnalytics() {
   document.getElementById('a-stat-avgrating').textContent = avgR;
   document.getElementById('a-stat-avgprice').textContent = avgPrice;
 
-  // Avg price by type bar chart
   const types = ['Single room', 'Bachelor Room', '2 Room', 'Flat Apartments'];
   const labels = ['Single', 'Bachelor', '2 Room', 'Apt'];
   const avgs = types.map(t => {
@@ -2003,7 +2327,6 @@ function renderAnalytics() {
     </div>
   `).join('');
 
-  // Top locations
   const locMap = {};
   allListings.forEach(x => {
     const loc = (x.location || 'Unknown').split(',')[0].trim();
@@ -2033,17 +2356,56 @@ window.openAddListingModal = function() {
   showToast('Use the "List a Room" button on the main site to add listings', 'info');
 };
 
-// ─ REFRESH ─
 window.refreshData = function() {
   showToast('Data refreshed', 'success');
 };
 
-// ─ INIT ─
 renderActivityLog();
 </script>
 
 <script>
-// ─ NAV & UI (non-module) ─
+// ─── DARK MODE TOGGLE ───
+let isDarkMode = true; // starts dark
+
+function toggleDarkMode() {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('light-mode', !isDarkMode);
+
+  const icon = document.getElementById('darkmodeIcon');
+  const label = document.getElementById('darkmodeLabel');
+  const settingsToggle = document.getElementById('settingsDarkToggle');
+
+  if (isDarkMode) {
+    icon.className = 'fa-solid fa-moon';
+    label.textContent = 'Light Mode';
+    if (settingsToggle) settingsToggle.classList.remove('on');
+  } else {
+    icon.className = 'fa-solid fa-sun';
+    label.textContent = 'Dark Mode';
+    if (settingsToggle) settingsToggle.classList.add('on');
+  }
+
+  // Persist preference
+  localStorage.setItem('kasiAdminDarkMode', isDarkMode ? '1' : '0');
+}
+
+// Restore preference on load
+(function() {
+  const saved = localStorage.getItem('kasiAdminDarkMode');
+  if (saved === '0') {
+    // start in light mode
+    isDarkMode = false;
+    document.body.classList.add('light-mode');
+    const icon = document.getElementById('darkmodeIcon');
+    const label = document.getElementById('darkmodeLabel');
+    if (icon) icon.className = 'fa-solid fa-sun';
+    if (label) label.textContent = 'Dark Mode';
+    const st = document.getElementById('settingsDarkToggle');
+    if (st) st.classList.add('on');
+  }
+})();
+
+// ─── NAV & UI ───
 function switchTab(tab, el) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
