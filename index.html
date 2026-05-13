@@ -5,57 +5,61 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KasiStay — Admin Command Centre</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface2: #18181f;
-  --surface3: #1e1e28;
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --surface3: #262626;
   --border: rgba(255,255,255,0.07);
-  --border-bright: rgba(255,255,255,0.14);
-  --accent: #7c6cff;
-  --accent2: #00e5b4;
+  --border-bright: rgba(255,255,255,0.13);
+  --accent: #10b981;
+  --accent2: #34d399;
   --accent3: #ff6b6b;
-  --accent4: #ffd166;
-  --text: #f0f0f5;
-  --text2: #8888a0;
-  --green: #00e5b4;
-  --red: #ff6b6b;
-  --yellow: #ffd166;
-  --blue: #5b9bff;
+  --accent4: #fbbf24;
+  --text: #f0f0f0;
+  --text2: #888888;
+  --green: #10b981;
+  --red: #ef4444;
+  --yellow: #fbbf24;
+  --blue: #60a5fa;
   --radius: 16px;
   --radius-sm: 10px;
-  --shadow: 0 4px 30px rgba(0,0,0,0.4);
+  --shadow: 0 4px 30px rgba(0,0,0,0.5);
 }
 
 /* ─── LIGHT MODE ─── */
 body.light-mode {
-  --bg: #f4f4f8;
+  --bg: #f9fafb;
   --surface: #ffffff;
-  --surface2: #f0f0f5;
-  --surface3: #e6e6ef;
-  --border: rgba(0,0,0,0.08);
-  --border-bright: rgba(0,0,0,0.14);
-  --text: #12121a;
-  --text2: #6666808;
-  --shadow: 0 4px 30px rgba(0,0,0,0.1);
+  --surface2: #f3f4f6;
+  --surface3: #e5e7eb;
+  --border: rgba(0,0,0,0.07);
+  --border-bright: rgba(0,0,0,0.12);
+  --text: #111111;
+  --text2: #6b7280;
+  --shadow: 0 4px 30px rgba(0,0,0,0.08);
+  --green: #059669;
+  --accent: #059669;
+  --accent2: #10b981;
 }
 body.light-mode {
-  --text2: #66668a;
+  --text2: #6b7280;
 }
 body.light-mode::before {
   background-image:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(124,108,255,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(0,229,180,0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(16,185,129,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(52,211,153,0.03) 0%, transparent 60%);
 }
 body.light-mode .sidebar {
   background: #ffffff;
   border-right-color: rgba(0,0,0,0.08);
 }
 body.light-mode .topbar {
-  background: rgba(244,244,248,0.85);
+  background: rgba(249,250,251,0.9);
 }
 body.light-mode .notif-btn,
 body.light-mode .topbar-btn:not(.primary),
@@ -67,7 +71,7 @@ body.light-mode .search-field {
   background: #ffffff;
 }
 body.light-mode tbody tr:hover {
-  background: #f7f7fb;
+  background: #f9fafb;
 }
 body.light-mode .approval-card,
 body.light-mode .chart-card,
@@ -80,20 +84,20 @@ body.light-mode .modal {
   background: #ffffff;
 }
 body.light-mode .action-btn {
-  background: #f0f0f5;
+  background: #f3f4f6;
 }
 body.light-mode .form-input {
-  background: #f0f0f5;
-  color: #12121a;
+  background: #f3f4f6;
+  color: #111111;
 }
 body.light-mode .toggle {
-  background: #dddde8;
-  border-color: #ccccda;
+  background: #d1d5db;
+  border-color: #d1d5db;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -107,8 +111,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(124,108,255,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(0,229,180,0.06) 0%, transparent 60%);
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(16,185,129,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(52,211,153,0.04) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -132,24 +136,24 @@ body::before {
   border-bottom: 1px solid var(--border);
 }
 .sidebar-logo .logo-text {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: -1px;
-  color: var(--text);
+  color: white;
 }
-.sidebar-logo .logo-text span { color: var(--accent); }
+.sidebar-logo .logo-text span { color: #10b981; }
 .sidebar-logo .admin-pill {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(124,108,255,0.15);
-  border: 1px solid rgba(124,108,255,0.3);
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.25);
   padding: 3px 10px;
   border-radius: 20px;
   font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 700;
+  color: #10b981;
   margin-top: 6px;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -192,8 +196,8 @@ body::before {
   color: var(--text);
 }
 .nav-item.active {
-  background: rgba(124,108,255,0.15);
-  color: var(--accent);
+  background: rgba(16,185,129,0.12);
+  color: #10b981;
 }
 .nav-item.active::before {
   content: '';
@@ -201,7 +205,7 @@ body::before {
   left: 0; top: 20%; bottom: 20%;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: var(--accent);
+  background: #10b981;
 }
 .nav-item i { width: 18px; text-align: center; font-size: 0.9rem; }
 .nav-badge {
@@ -221,7 +225,7 @@ body::before {
   50% { box-shadow: 0 0 0 6px rgba(255,107,107,0); }
 }
 .nav-badge.yellow { background: var(--yellow); animation: none; }
-.nav-badge.green { background: var(--green); color: #000; animation: none; }
+.nav-badge.green { background: var(--green); color: #fff; animation: none; }
 
 .sidebar-footer {
   padding: 16px 12px;
@@ -270,7 +274,7 @@ body::before {
   justify-content: space-between;
   padding: 20px 32px;
   border-bottom: 1px solid var(--border);
-  background: rgba(10,10,15,0.8);
+  background: rgba(13,13,13,0.9);
   backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
@@ -278,9 +282,9 @@ body::before {
   transition: background 0.3s;
 }
 .topbar-left h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.4rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
 }
 .topbar-left p { font-size: 0.82rem; color: var(--text2); margin-top: 2px; }
@@ -293,7 +297,7 @@ body::before {
   border: 1px solid var(--border-bright);
   background: var(--surface2);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -301,11 +305,11 @@ body::before {
 }
 .topbar-btn:hover { background: var(--surface3); border-color: var(--border-bright); }
 .topbar-btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: #111111;
+  border-color: #111111;
   color: white;
 }
-.topbar-btn.primary:hover { background: #9080ff; }
+.topbar-btn.primary:hover { background: #10b981; border-color: #10b981; }
 
 /* ─── DARK MODE TOGGLE BUTTON ─── */
 .darkmode-btn {
@@ -315,7 +319,7 @@ body::before {
   border: 1px solid var(--border-bright);
   background: var(--surface2);
   color: var(--text2);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
@@ -380,7 +384,7 @@ body::before {
   border-radius: 0 16px 0 60px;
   opacity: 0.1;
 }
-.stat-card.purple::after { background: var(--accent); }
+.stat-card.purple::after { background: var(--green); }
 .stat-card.green::after { background: var(--green); }
 .stat-card.red::after { background: var(--red); }
 .stat-card.yellow::after { background: var(--yellow); }
@@ -392,10 +396,10 @@ body::before {
   font-size: 1rem;
   margin-bottom: 14px;
 }
-.stat-icon.purple { background: rgba(124,108,255,0.15); color: var(--accent); }
-.stat-icon.green { background: rgba(0,229,180,0.12); color: var(--green); }
-.stat-icon.red { background: rgba(255,107,107,0.12); color: var(--red); }
-.stat-icon.yellow { background: rgba(255,209,102,0.12); color: var(--yellow); }
+.stat-icon.purple { background: rgba(16,185,129,0.12); color: var(--green); }
+.stat-icon.green { background: rgba(16,185,129,0.18); color: var(--green); }
+.stat-icon.red { background: rgba(239,68,68,0.12); color: var(--red); }
+.stat-icon.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); }
 
 .stat-value {
   font-family: 'Syne', sans-serif;
@@ -425,9 +429,9 @@ body::before {
   margin-bottom: 16px;
 }
 .section-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 .section-subtitle { font-size: 0.8rem; color: var(--text2); margin-top: 2px; }
 
@@ -466,7 +470,7 @@ body::before {
   border: none;
   outline: none;
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   width: 100%;
 }
@@ -478,7 +482,7 @@ body::before {
   border-radius: var(--radius-sm);
   padding: 8px 12px;
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   cursor: pointer;
   outline: none;
@@ -531,10 +535,10 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   font-weight: 700;
   white-space: nowrap;
 }
-.status-pill.approved { background: rgba(0,229,180,0.12); color: var(--green); border: 1px solid rgba(0,229,180,0.2); }
-.status-pill.pending { background: rgba(255,209,102,0.12); color: var(--yellow); border: 1px solid rgba(255,209,102,0.2); }
-.status-pill.rejected { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
-.status-pill.active { background: rgba(91,155,255,0.12); color: var(--blue); border: 1px solid rgba(91,155,255,0.2); }
+.status-pill.approved { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+.status-pill.pending { background: rgba(251,191,36,0.12); color: var(--yellow); border: 1px solid rgba(251,191,36,0.2); }
+.status-pill.rejected { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+.status-pill.active { background: rgba(96,165,250,0.12); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
 .status-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
 .action-btns { display: flex; gap: 6px; align-items: center; }
@@ -550,10 +554,10 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   transition: all 0.15s;
 }
 .action-btn:hover { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,0.2); }
-.action-btn.approve:hover { background: rgba(0,229,180,0.15); color: var(--green); border-color: rgba(0,229,180,0.3); }
-.action-btn.reject:hover { background: rgba(255,107,107,0.15); color: var(--red); border-color: rgba(255,107,107,0.3); }
-.action-btn.edit:hover { background: rgba(124,108,255,0.15); color: var(--accent); border-color: rgba(124,108,255,0.3); }
-.action-btn.delete:hover { background: rgba(255,107,107,0.15); color: var(--red); border-color: rgba(255,107,107,0.3); }
+.action-btn.approve:hover { background: rgba(16,185,129,0.15); color: var(--green); border-color: rgba(16,185,129,0.3); }
+.action-btn.reject:hover { background: rgba(239,68,68,0.15); color: var(--red); border-color: rgba(239,68,68,0.3); }
+.action-btn.edit:hover { background: rgba(16,185,129,0.12); color: var(--green); border-color: rgba(16,185,129,0.3); }
+.action-btn.delete:hover { background: rgba(239,68,68,0.15); color: var(--red); border-color: rgba(239,68,68,0.3); }
 
 .table-footer {
   display: flex;
@@ -573,7 +577,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   border: 1px solid var(--border-bright);
   background: transparent;
   color: var(--text2);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.15s;
@@ -619,12 +623,12 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   margin-bottom: 8px;
 }
 .approval-price {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.2rem;
   font-weight: 800;
-  color: var(--accent);
+  color: #10b981;
 }
-.approval-price span { font-size: 0.75rem; font-family: 'DM Sans', sans-serif; color: var(--text2); font-weight: 400; }
+.approval-price span { font-size: 0.75rem; font-family: 'Inter', sans-serif; color: var(--text2); font-weight: 400; }
 .approval-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
 .approval-loc { font-size: 0.8rem; color: var(--text2); display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
 .approval-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -641,7 +645,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   flex: 1;
   padding: 9px;
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
@@ -650,9 +654,9 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   gap: 6px;
   transition: all 0.2s;
 }
-.approval-btn.approve { background: rgba(0,229,180,0.15); color: var(--green); border: 1px solid rgba(0,229,180,0.25); }
-.approval-btn.approve:hover { background: var(--green); color: #000; }
-.approval-btn.reject { background: rgba(255,107,107,0.12); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.approval-btn.approve { background: rgba(16,185,129,0.12); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+.approval-btn.approve:hover { background: var(--green); color: #fff; }
+.approval-btn.reject { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
 .approval-btn.reject:hover { background: var(--red); color: white; }
 .approval-btn.preview { background: var(--surface2); color: var(--text); border: 1px solid var(--border-bright); }
 .approval-btn.preview:hover { background: var(--surface3); }
@@ -685,8 +689,8 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   min-height: 4px;
 }
 .bar:hover { opacity: 0.85; }
-.bar.purple { background: linear-gradient(180deg, var(--accent), rgba(124,108,255,0.5)); }
-.bar.green { background: linear-gradient(180deg, var(--green), rgba(0,229,180,0.4)); }
+.bar.purple { background: linear-gradient(180deg, #10b981, rgba(16,185,129,0.4)); }
+.bar.green { background: linear-gradient(180deg, #34d399, rgba(52,211,153,0.35)); }
 .bar-label { font-size: 0.65rem; color: var(--text2); font-weight: 500; }
 
 .donut-container {
@@ -772,7 +776,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   flex-shrink: 0;
   border: 1px solid var(--border-bright);
 }
-.toggle.on { background: var(--accent); border-color: var(--accent); }
+.toggle.on { background: #10b981; border-color: #10b981; }
 .toggle::after {
   content: '';
   position: absolute;
@@ -794,26 +798,26 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   border-radius: var(--radius-sm);
   padding: 10px 12px;
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   outline: none;
   transition: border-color 0.2s, background 0.3s, color 0.3s;
 }
-.form-input:focus { border-color: var(--accent); }
+.form-input:focus { border-color: #10b981; }
 .save-btn {
-  background: var(--accent);
+  background: #111111;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: var(--radius-sm);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   display: flex; align-items: center; gap: 6px;
 }
-.save-btn:hover { background: #9080ff; transform: translateY(-1px); }
+.save-btn:hover { background: #10b981; transform: translateY(-1px); }
 
 /* ─── IMAGE UPLOAD AREA ─── */
 .img-upload-area {
@@ -825,7 +829,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   transition: border-color 0.2s, background 0.2s;
   margin-bottom: 10px;
 }
-.img-upload-area:hover { border-color: var(--accent); background: rgba(124,108,255,0.04); }
+.img-upload-area:hover { border-color: #10b981; background: rgba(16,185,129,0.03); }
 .img-upload-area i { font-size: 1.5rem; color: var(--text2); margin-bottom: 6px; display: block; }
 .img-upload-area span { font-size: 0.78rem; color: var(--text2); }
 .img-preview-wrap {
@@ -863,7 +867,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   font-weight: 700;
   cursor: pointer;
   display: flex; align-items: center; gap: 6px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 .img-url-row {
   display: flex;
@@ -881,11 +885,11 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   font-size: 0.8rem;
   cursor: pointer;
   white-space: nowrap;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
   transition: all 0.2s;
 }
-.img-url-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.img-url-btn:hover { background: #10b981; color: white; border-color: #10b981; }
 .img-source-tabs {
   display: flex;
   gap: 6px;
@@ -898,14 +902,14 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   border: 1px solid var(--border-bright);
   background: transparent;
   color: var(--text2);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
 }
-.img-tab.active { background: rgba(124,108,255,0.15); color: var(--accent); border-color: rgba(124,108,255,0.3); }
+.img-tab.active { background: rgba(16,185,129,0.12); color: #10b981; border-color: rgba(16,185,129,0.3); }
 .img-tab-panel { display: none; }
 .img-tab-panel.active { display: block; }
 
@@ -971,7 +975,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   color: var(--text);
   padding: 9px 18px;
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -979,22 +983,22 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
 }
 .btn-cancel:hover { background: var(--surface3); }
 .btn-confirm {
-  background: var(--accent);
+  background: #111111;
   color: white;
   border: none;
   padding: 9px 18px;
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
 }
-.btn-confirm:hover { background: #9080ff; }
+.btn-confirm:hover { background: #10b981; }
 .btn-confirm.danger { background: var(--red); }
-.btn-confirm.danger:hover { background: #ff4a4a; }
-.btn-confirm.green { background: var(--green); color: #000; }
-.btn-confirm.green:hover { background: #00ccaa; }
+.btn-confirm.danger:hover { background: #dc2626; }
+.btn-confirm.green { background: #10b981; color: #fff; }
+.btn-confirm.green:hover { background: #059669; }
 
 /* ─── TOAST ─── */
 .toast-container {
@@ -1029,8 +1033,8 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
 .toast.success .toast-icon { color: var(--green); }
 .toast.error { border-left: 3px solid var(--red); }
 .toast.error .toast-icon { color: var(--red); }
-.toast.info { border-left: 3px solid var(--accent); }
-.toast.info .toast-icon { color: var(--accent); }
+.toast.info { border-left: 3px solid #10b981; }
+.toast.info .toast-icon { color: #10b981; }
 
 /* ─── ACTIVITY FEED ─── */
 .activity-list { display: flex; flex-direction: column; gap: 1px; }
@@ -1051,10 +1055,10 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   flex-shrink: 0;
   margin-top: 1px;
 }
-.activity-dot.green { background: rgba(0,229,180,0.12); color: var(--green); }
-.activity-dot.red { background: rgba(255,107,107,0.12); color: var(--red); }
-.activity-dot.yellow { background: rgba(255,209,102,0.12); color: var(--yellow); }
-.activity-dot.purple { background: rgba(124,108,255,0.12); color: var(--accent); }
+.activity-dot.green { background: rgba(16,185,129,0.12); color: var(--green); }
+.activity-dot.red { background: rgba(239,68,68,0.12); color: var(--red); }
+.activity-dot.yellow { background: rgba(251,191,36,0.12); color: var(--yellow); }
+.activity-dot.purple { background: rgba(16,185,129,0.12); color: var(--green); }
 .activity-text { font-size: 0.83rem; line-height: 1.5; }
 .activity-text strong { font-weight: 600; }
 .activity-time { font-size: 0.72rem; color: var(--text2); margin-top: 2px; }
@@ -1066,7 +1070,7 @@ td { padding: 14px 16px; font-size: 0.875rem; vertical-align: middle; }
   color: var(--text2);
 }
 .empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: 0.3; }
-.empty-state h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.empty-state h3 { font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
 .empty-state p { font-size: 0.85rem; }
 
 /* ─── RESPONSIVE ─── */
@@ -1138,7 +1142,7 @@ input[type=checkbox] {
 <!-- ─── SIDEBAR ─── -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-text">KasiStay<span>.</span></div>
+    <div class="logo-text">Kasi<span>Stay</span></div>
     <div class="admin-pill"><i class="fa-solid fa-shield-halved"></i> Admin Panel</div>
   </div>
   <nav class="sidebar-nav">
@@ -2204,7 +2208,7 @@ window.previewListing = function(id) {
         <div style="color:var(--text2);font-size:0.82rem;margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.location}</div>
       </div>
       <div>
-        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--accent);">R${(item.price||0).toLocaleString()}<span style="font-size:0.75rem;color:var(--text2);font-family:'DM Sans';">/mo</span></div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--accent);">R${(item.price||0).toLocaleString()}<span style="font-size:0.75rem;color:var(--text2);font-family:'Inter';">/mo</span></div>
         <span class="status-pill ${status}" style="margin-top:4px;display:inline-flex;">${status}</span>
       </div>
     </div>
@@ -2353,7 +2357,64 @@ window.closeModal = function(id) {
 };
 
 window.openAddListingModal = function() {
-  showToast('Use the "List a Room" button on the main site to add listings', 'info');
+  document.getElementById('addPropertyModal').classList.add('open');
+};
+
+window.submitNewProperty = async function() {
+  const title    = document.getElementById('newPropTitle').value.trim();
+  const priceRaw = document.getElementById('newPropPrice').value;
+  const type     = document.getElementById('newPropType').value;
+  const location = document.getElementById('newPropLocation').value.trim();
+  const desc     = document.getElementById('newPropDesc').value.trim();
+  const amStr    = document.getElementById('newPropAmenities').value.trim();
+  const imageUrl = document.getElementById('newPropImageUrl').value.trim();
+  const owner    = document.getElementById('newPropOwner').value.trim();
+
+  if (!title || !priceRaw || !type || !location) {
+    showToast('Please fill in Title, Price, Type, and Location', 'error');
+    return;
+  }
+
+  const price = Number(priceRaw);
+  const amenities = amStr ? amStr.split(',').map(a => a.trim()).filter(Boolean) : [];
+
+  const btn = document.getElementById('addPropSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+
+  try {
+    const nRef = push(ref(db, 'listings'));
+    await set(nRef, {
+      title, price, type, location,
+      desc: desc || 'No description provided.',
+      amenities,
+      image: imageUrl || '',
+      additionalImages: [],
+      ownerName: owner || 'KasiStay Admin',
+      verified: true,
+      adminStatus: 'approved',
+      timestamp: Date.now(),
+      reviews: []
+    });
+    await set(ref(db, `likeCounts/${nRef.key}`), { count: 0 });
+
+    addActivity('add', `Admin added new listing: <strong>${title}</strong>`);
+    showToast('Property added and live on the main site!', 'success');
+    closeModal('addPropertyModal');
+
+    // Reset form
+    ['newPropTitle','newPropPrice','newPropDesc','newPropAmenities','newPropImageUrl','newPropOwner'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('newPropType').value = '';
+    document.getElementById('newPropImgPreviewWrap').style.display = 'none';
+  } catch (err) {
+    showToast('Error adding property: ' + (err.message || err), 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Property';
+  }
 };
 
 window.refreshData = function() {
@@ -2436,6 +2497,88 @@ function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlayBg').classList.remove('open');
 }
+</script>
+<!-- ─── ADD PROPERTY MODAL ─── -->
+<div class="modal-overlay" id="addPropertyModal">
+  <div class="modal" style="max-width:580px;">
+    <div class="modal-head">
+      <h2><i class="fa-solid fa-plus" style="color:#10b981;margin-right:8px;"></i>Add New Property</h2>
+      <div class="modal-close" onclick="closeModal('addPropertyModal')"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body">
+      <!-- Image -->
+      <div class="form-group">
+        <label class="form-label"><i class="fa-solid fa-image" style="margin-right:5px;color:#10b981;"></i>Property Image URL</label>
+        <div class="img-url-row">
+          <input class="form-input" id="newPropImageUrl" type="url" placeholder="https://example.com/image.jpg" oninput="previewNewPropImage(this.value)" style="margin-bottom:0;">
+          <button class="img-url-btn" onclick="previewNewPropImage(document.getElementById('newPropImageUrl').value)"><i class="fa-solid fa-eye"></i> Preview</button>
+        </div>
+        <div id="newPropImgPreviewWrap" style="display:none;margin-top:10px;border-radius:10px;overflow:hidden;height:160px;">
+          <img id="newPropImgPreview" src="" alt="Preview" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Property Title *</label>
+          <input class="form-input" id="newPropTitle" type="text" placeholder="e.g. Cozy Bachelor Room in Sandton">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Rent (R) *</label>
+          <input class="form-input" id="newPropPrice" type="number" placeholder="3500">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Property Type *</label>
+          <select class="form-input" id="newPropType">
+            <option value="">Select type...</option>
+            <option value="Single room">Single Room</option>
+            <option value="Bachelor Room">Bachelor Room</option>
+            <option value="2 Room">2 Room</option>
+            <option value="Flat Apartments">Flat / Apartment</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Location *</label>
+        <input class="form-input" id="newPropLocation" type="text" placeholder="e.g. Sandton, Johannesburg">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" id="newPropDesc" rows="3" style="resize:vertical;" placeholder="Describe the property, surroundings, nearby transport..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Amenities <span style="color:var(--text2);font-weight:400;">(comma separated)</span></label>
+        <input class="form-input" id="newPropAmenities" type="text" placeholder="WiFi, Parking, Laundry, Water & Lights">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Owner / Landlord Name</label>
+        <input class="form-input" id="newPropOwner" type="text" placeholder="Landlord name">
+      </div>
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#10b981;display:flex;align-items:center;gap:8px;">
+        <i class="fa-solid fa-circle-check"></i>
+        This listing will be <strong>immediately approved</strong> and visible to users on the main site.
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeModal('addPropertyModal')">Cancel</button>
+      <button class="btn-confirm green" id="addPropSubmitBtn" onclick="submitNewProperty()"><i class="fa-solid fa-plus"></i> Add Property</button>
+    </div>
+  </div>
+</div>
+
+<script>
+window.previewNewPropImage = function(url) {
+  const wrap = document.getElementById('newPropImgPreviewWrap');
+  const img  = document.getElementById('newPropImgPreview');
+  if (url && url.startsWith('http')) {
+    wrap.style.display = 'block';
+    img.src = url;
+    img.onerror = () => { wrap.style.display = 'none'; };
+  } else {
+    wrap.style.display = 'none';
+  }
+};
 </script>
 </body>
 </html>
