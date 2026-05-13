@@ -1747,6 +1747,20 @@ const PAGE_SIZE = 10;
 // Holds the pending new image value while editing
 let pendingEditImage = null;
 
+// ─ CLOUDINARY ─
+const CLOUD_NAME    = 'dv5bsbydu';
+const UPLOAD_PRESET = 'admin_tlaka';
+
+async function uploadToCloudinary(file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', UPLOAD_PRESET);
+  const r = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: fd });
+  const d = await r.json();
+  if (d.secure_url) return d.secure_url;
+  throw new Error(d.error?.message || 'Upload failed');
+}
+
 // ─ HELPERS ─
 function getStatus(item) {
   if (item.adminStatus) return item.adminStatus;
@@ -2107,41 +2121,47 @@ window.switchImgTab = function(tab) {
   document.getElementById('imgPanelUpload').classList.toggle('active', tab === 'upload');
 };
 
-window.handleImageFileChange = function(input) {
+window.handleImageFileChange = async function(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) return showToast('File too large (max 5 MB)', 'error');
-  const reader = new FileReader();
-  reader.onload = e => {
-    showEditImagePreview(e.target.result);
-    showToast('Image loaded — save to apply', 'success');
-  };
-  reader.readAsDataURL(file);
+  showToast('Uploading image...', 'info');
+  try {
+    const url = await uploadToCloudinary(file);
+    showEditImagePreview(url);
+    document.getElementById('editImageUrl').value = url;
+    showToast('Image uploaded successfully', 'success');
+  } catch (err) {
+    showToast('Upload failed: ' + err.message, 'error');
+  }
 };
 
 // Drag & drop support
 document.getElementById('imgUploadArea').addEventListener('dragover', e => {
   e.preventDefault();
   e.currentTarget.style.borderColor = 'var(--accent)';
-  e.currentTarget.style.background = 'rgba(124,108,255,0.06)';
+  e.currentTarget.style.background = 'rgba(16,185,129,0.05)';
 });
 document.getElementById('imgUploadArea').addEventListener('dragleave', e => {
   e.currentTarget.style.borderColor = '';
   e.currentTarget.style.background = '';
 });
-document.getElementById('imgUploadArea').addEventListener('drop', e => {
+document.getElementById('imgUploadArea').addEventListener('drop', async e => {
   e.preventDefault();
   e.currentTarget.style.borderColor = '';
   e.currentTarget.style.background = '';
   const file = e.dataTransfer.files[0];
   if (!file || !file.type.startsWith('image/')) return showToast('Please drop an image file', 'error');
   if (file.size > 5 * 1024 * 1024) return showToast('File too large (max 5 MB)', 'error');
-  const reader = new FileReader();
-  reader.onload = ev => {
-    showEditImagePreview(ev.target.result);
-    showToast('Image loaded — save to apply', 'success');
-  };
-  reader.readAsDataURL(file);
+  showToast('Uploading image...', 'info');
+  try {
+    const url = await uploadToCloudinary(file);
+    showEditImagePreview(url);
+    document.getElementById('editImageUrl').value = url;
+    showToast('Image uploaded successfully', 'success');
+  } catch (err) {
+    showToast('Upload failed: ' + err.message, 'error');
+  }
 });
 
 window.saveEdit = function() {
