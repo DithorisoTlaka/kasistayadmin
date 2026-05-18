@@ -1137,6 +1137,115 @@ input[type=checkbox] {
 </head>
 <body>
 
+<!-- ── AUTH GUARD: full-screen loading overlay shown until auth is confirmed ── -->
+<div id="authGuard" style="
+  position:fixed;inset:0;
+  background:#0d0d0d;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:20px;
+  transition:opacity 0.4s ease;
+">
+  <div style="
+    font-family:'Inter',sans-serif;
+    font-size:2rem;
+    font-weight:800;
+    letter-spacing:-1.5px;
+    color:white;
+  ">Kasi<span style="color:#10b981;">Stay</span></div>
+  <div style="
+    width:38px;height:38px;
+    border:3px solid #262626;
+    border-top-color:#10b981;
+    border-radius:50%;
+    animation:authSpin 0.8s linear infinite;
+  "></div>
+  <div style="font-family:'Inter',sans-serif;font-size:0.82rem;color:#888;">Verifying admin session…</div>
+</div>
+<style>
+@keyframes authSpin { to { transform: rotate(360deg); } }
+</style>
+
+<!-- ── Firebase Auth guard script — runs before page is visible ── -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD_MtScfT0J5b8LbMm5oAATmw84plKWl-0",
+  authDomain: "kasistay-3b79c.firebaseapp.com",
+  projectId: "kasistay-3b79c",
+  storageBucket: "kasistay-3b79c.appspot.com",
+  messagingSenderId: "19156366595",
+  appId: "1:19156366595:web:c64b9bd6dfde5790e02536",
+  databaseURL: "https://kasistay-3b79c-default-rtdb.firebaseio.com"
+};
+
+const app  = initializeApp(firebaseConfig, 'auth-app');
+const auth = getAuth(app);
+
+const guard = document.getElementById('authGuard');
+
+function showDashboard(user) {
+  // ── Populate sidebar admin profile with real Google info ──
+  const name   = user.displayName  || 'Admin';
+  const email  = user.email        || '';
+  const photo  = user.photoURL     || '';
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2) || 'A';
+
+  const avatarEl = document.querySelector('.admin-avatar');
+  if (avatarEl) {
+    if (photo) {
+      avatarEl.innerHTML = `<img src="${photo}" alt="${name}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+      avatarEl.style.background = 'none';
+    } else {
+      avatarEl.textContent = initials;
+    }
+  }
+  const nameEl = document.querySelector('.admin-info .name');
+  if (nameEl) nameEl.textContent = name;
+  const roleEl = document.querySelector('.admin-info .role');
+  if (roleEl) roleEl.textContent = email;
+
+  // ── Expose sign-out globally ──
+  window.adminSignOut = async function() {
+    await signOut(auth);
+    window.location.replace('login.html');
+  };
+
+  // ── Attach sign-out to sidebar profile click ──
+  const profileEl = document.querySelector('.admin-profile');
+  if (profileEl) {
+    profileEl.title = 'Click to sign out';
+    profileEl.onclick = () => {
+      if (confirm(`Sign out of ${email}?`)) window.adminSignOut();
+    };
+  }
+
+  // ── Fade out guard, reveal dashboard ──
+  guard.style.opacity = '0';
+  setTimeout(() => { guard.style.display = 'none'; }, 420);
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    showDashboard(user);
+  } else {
+    // Not authenticated → send to login page
+    window.location.replace('login.html');
+  }
+});
+</script>
+
 <div class="overlay-bg" id="overlayBg" onclick="closeSidebar()"></div>
 
 <!-- ─── SIDEBAR ─── -->
