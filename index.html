@@ -1468,6 +1468,7 @@ onAuthStateChanged(auth, (user) => {
               <th>Price</th>
               <th>Location</th>
               <th>Status</th>
+              <th>NSFAS</th>
               <th>Reviews</th>
               <th>Actions</th>
             </tr>
@@ -1779,6 +1780,54 @@ onAuthStateChanged(auth, (user) => {
           <option value="rejected">Rejected</option>
         </select>
       </div>
+      <div class="form-group" style="background:rgba(14,165,233,0.06);border:1px solid rgba(14,165,233,0.18);border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.85rem;font-weight:700;color:#0ea5e9;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-graduation-cap"></i> NSFAS Accredited</div>
+            <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">Mark this property as NSFAS accredited</div>
+          </div>
+          <div class="toggle" id="editNsfasToggle" onclick="this.classList.toggle('on')" style="border-color:rgba(14,165,233,0.3);"></div>
+        </div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+        <div style="font-size:0.75rem;font-weight:700;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Owner / Contact Details</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">WhatsApp Number</label>
+            <input class="form-input" id="editOwnerWhatsApp" type="tel" placeholder="+27 xxxxxxx">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Call Number</label>
+            <input class="form-input" id="editOwnerPhone" type="tel" placeholder="+27 xxxxxxx">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Email</label>
+            <input class="form-input" id="editOwnerEmail" type="email" placeholder="owner@email.com">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">ID Number</label>
+            <input class="form-input" id="editOwnerID" type="text" placeholder="SA ID number">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Bank</label>
+            <select class="form-input" id="editOwnerBank">
+              <option value="">Select bank...</option>
+              <option value="FNB">FNB</option>
+              <option value="Standard Bank">Standard Bank</option>
+              <option value="ABSA">ABSA</option>
+              <option value="Nedbank">Nedbank</option>
+              <option value="Capitec">Capitec</option>
+              <option value="African Bank">African Bank</option>
+              <option value="Tyme Bank">Tyme Bank</option>
+              <option value="Discovery Bank">Discovery Bank</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Account Number</label>
+            <input class="form-input" id="editOwnerAccount" type="text" placeholder="Account number">
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
@@ -2032,7 +2081,15 @@ function renderApprovals() {
         <div class="approval-meta">
           <span class="approval-tag">${item.type || 'Unknown'}</span>
           ${(item.amenities||[]).slice(0,2).map(a=>`<span class="approval-tag">${a}</span>`).join('')}
+          ${item.nsfas ? `<span class="approval-tag" style="background:rgba(14,165,233,0.12);color:#0ea5e9;border:1px solid rgba(14,165,233,0.2);"><i class="fa-solid fa-graduation-cap"></i> NSFAS</span>` : ''}
         </div>
+        ${(item.ownerWhatsApp || item.ownerPhone || item.ownerEmail) ? `
+        <div style="font-size:0.75rem;color:var(--text2);margin-bottom:10px;display:flex;flex-direction:column;gap:3px;">
+          ${item.ownerName    ? `<span><i class="fa-solid fa-user" style="width:12px;"></i> ${item.ownerName}</span>` : ''}
+          ${item.ownerWhatsApp? `<span><i class="fa-brands fa-whatsapp" style="width:12px;color:#25D366;"></i> ${item.ownerWhatsApp}</span>` : ''}
+          ${item.ownerPhone   ? `<span><i class="fa-solid fa-phone" style="width:12px;"></i> ${item.ownerPhone}</span>` : ''}
+          ${item.ownerEmail   ? `<span><i class="fa-solid fa-envelope" style="width:12px;"></i> ${item.ownerEmail}</span>` : ''}
+        </div>` : ''}
         <div class="approval-actions">
           <button class="approval-btn approve" onclick="approveListing('${item.id}')"><i class="fa-solid fa-check"></i> Approve</button>
           <button class="approval-btn reject" onclick="rejectListing('${item.id}')"><i class="fa-solid fa-xmark"></i> Reject</button>
@@ -2120,6 +2177,7 @@ function renderListingsTable() {
         <td><strong>R${(item.price||0).toLocaleString()}</strong><span style="font-size:0.72rem;color:var(--text2);">/mo</span></td>
         <td style="font-size:0.82rem;color:var(--text2);">${item.location || '—'}</td>
         <td><span class="status-pill ${status}">${status}</span></td>
+        <td>${item.nsfas ? `<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(14,165,233,0.12);color:#0ea5e9;border:1px solid rgba(14,165,233,0.25);padding:3px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;"><i class="fa-solid fa-graduation-cap"></i> Yes</span>` : `<span style="color:var(--text2);font-size:0.78rem;">—</span>`}</td>
         <td>
           <div style="display:flex;align-items:center;gap:4px;">
             ${starsHtml(Math.round(avgRating(reviews)))}
@@ -2137,7 +2195,7 @@ function renderListingsTable() {
         </td>
       </tr>
     `;
-  }).join('') : `<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h3>No listings found</h3><p>Try adjusting your search filters</p></div></td></tr>`;
+  }).join('') : `<tr><td colspan="9"><div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h3>No listings found</h3><p>Try adjusting your search filters</p></div></td></tr>`;
 
   document.getElementById('listingTableCount').textContent = `Showing ${Math.min(start+1, total)}–${Math.min(start+PAGE_SIZE, total)} of ${total} listings`;
 
@@ -2187,6 +2245,17 @@ window.openEditModal = function(id) {
   document.getElementById('editDesc').value = item.desc || '';
   document.getElementById('editAmenities').value = (item.amenities || []).join(', ');
   document.getElementById('editStatus').value = getStatus(item);
+  // NSFAS toggle
+  const nsfasToggle = document.getElementById('editNsfasToggle');
+  if (nsfasToggle) nsfasToggle.classList.toggle('on', !!item.nsfas);
+  // Owner contact details
+  document.getElementById('editOwnerWhatsApp').value = item.ownerWhatsApp || '';
+  document.getElementById('editOwnerPhone').value    = item.ownerPhone    || '';
+  document.getElementById('editOwnerEmail').value    = item.ownerEmail    || '';
+  document.getElementById('editOwnerID').value       = item.ownerID       || '';
+  const bankEl = document.getElementById('editOwnerBank');
+  if (bankEl) bankEl.value = item.ownerBank || '';
+  document.getElementById('editOwnerAccount').value  = item.ownerAccount  || '';
   document.getElementById('editModal').classList.add('open');
 };
 
@@ -2288,7 +2357,14 @@ window.saveEdit = function() {
     desc: document.getElementById('editDesc').value,
     amenities: amenitiesStr ? amenitiesStr.split(',').map(a=>a.trim()).filter(Boolean) : [],
     adminStatus: status,
-    verified: status === 'approved'
+    verified: status === 'approved',
+    nsfas: document.getElementById('editNsfasToggle')?.classList.contains('on') || false,
+    ownerWhatsApp: document.getElementById('editOwnerWhatsApp').value.trim(),
+    ownerPhone:    document.getElementById('editOwnerPhone').value.trim(),
+    ownerEmail:    document.getElementById('editOwnerEmail').value.trim(),
+    ownerID:       document.getElementById('editOwnerID').value.trim(),
+    ownerBank:     document.getElementById('editOwnerBank').value,
+    ownerAccount:  document.getElementById('editOwnerAccount').value.trim(),
   };
 
   // Apply image change
@@ -2337,6 +2413,7 @@ window.previewListing = function(id) {
       <div>
         <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;">${item.title}</div>
         <div style="color:var(--text2);font-size:0.82rem;margin-top:4px;"><i class="fa-solid fa-location-dot"></i> ${item.location}</div>
+        ${item.nsfas ? `<span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,#0ea5e9,#0284c7);color:white;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:6px;"><i class="fa-solid fa-graduation-cap"></i> NSFAS Accredited</span>` : ''}
       </div>
       <div>
         <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--accent);">R${(item.price||0).toLocaleString()}<span style="font-size:0.75rem;color:var(--text2);font-family:'Inter';">/mo</span></div>
@@ -2347,7 +2424,20 @@ window.previewListing = function(id) {
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
       ${(item.amenities||[]).map(a=>`<span style="font-size:0.7rem;font-weight:600;padding:3px 9px;background:var(--surface3);border-radius:6px;color:var(--text2);">${a}</span>`).join('')}
     </div>
-    <div style="font-size:0.82rem;color:var(--text2);">${reviews.length} review${reviews.length !== 1 ? 's' : ''} · Avg: ${avgRating(reviews)} ★</div>
+    <div style="font-size:0.82rem;color:var(--text2);margin-bottom:14px;">${reviews.length} review${reviews.length !== 1 ? 's' : ''} · Avg: ${avgRating(reviews)} ★</div>
+    ${(item.ownerName || item.ownerWhatsApp || item.ownerPhone || item.ownerEmail || item.ownerID || item.ownerBank) ? `
+    <div style="background:var(--surface2);border:1px solid var(--border-bright);border-radius:12px;padding:14px;margin-top:4px;">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Owner / Contact Details</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.82rem;">
+        ${item.ownerName    ? `<div><span style="color:var(--text2);">Name: </span><strong>${item.ownerName}</strong></div>` : ''}
+        ${item.ownerWhatsApp? `<div><span style="color:var(--text2);">WhatsApp: </span><strong>${item.ownerWhatsApp}</strong></div>` : ''}
+        ${item.ownerPhone   ? `<div><span style="color:var(--text2);">Call: </span><strong>${item.ownerPhone}</strong></div>` : ''}
+        ${item.ownerEmail   ? `<div style="grid-column:1/-1;"><span style="color:var(--text2);">Email: </span><strong>${item.ownerEmail}</strong></div>` : ''}
+        ${item.ownerID      ? `<div><span style="color:var(--text2);">ID: </span><strong>${item.ownerID}</strong></div>` : ''}
+        ${item.ownerBank    ? `<div><span style="color:var(--text2);">Bank: </span><strong>${item.ownerBank}</strong></div>` : ''}
+        ${item.ownerAccount ? `<div><span style="color:var(--text2);">Account: </span><strong>${item.ownerAccount}</strong></div>` : ''}
+      </div>
+    </div>` : ''}
   `;
   document.getElementById('previewApproveBtn').onclick = () => { approveListing(id); closeModal('previewModal'); };
   document.getElementById('previewRejectBtn').onclick = () => { rejectListing(id); closeModal('previewModal'); };
@@ -2522,6 +2612,13 @@ window.submitNewProperty = async function() {
       image: imageUrl || '',
       additionalImages: [],
       ownerName: owner || 'KasiStay Admin',
+      ownerWhatsApp: document.getElementById('newPropWhatsApp').value.trim(),
+      ownerPhone:    document.getElementById('newPropPhone').value.trim(),
+      ownerEmail:    document.getElementById('newPropEmail').value.trim(),
+      ownerID:       document.getElementById('newPropOwnerID').value.trim(),
+      ownerBank:     document.getElementById('newPropOwnerBank').value,
+      ownerAccount:  document.getElementById('newPropOwnerAccount').value.trim(),
+      nsfas:         document.getElementById('newPropNsfasToggle')?.classList.contains('on') || false,
       verified: true,
       adminStatus: 'approved',
       timestamp: Date.now(),
@@ -2534,11 +2631,15 @@ window.submitNewProperty = async function() {
     closeModal('addPropertyModal');
 
     // Reset form
-    ['newPropTitle','newPropPrice','newPropDesc','newPropAmenities','newPropImageUrl','newPropOwner'].forEach(id => {
+    ['newPropTitle','newPropPrice','newPropDesc','newPropAmenities','newPropImageUrl','newPropOwner',
+     'newPropWhatsApp','newPropPhone','newPropEmail','newPropOwnerID','newPropOwnerAccount'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     document.getElementById('newPropType').value = '';
+    document.getElementById('newPropOwnerBank').value = '';
+    const nsfasTgl = document.getElementById('newPropNsfasToggle');
+    if (nsfasTgl) nsfasTgl.classList.remove('on');
     document.getElementById('newPropImgPreviewWrap').style.display = 'none';
   } catch (err) {
     showToast('Error adding property: ' + (err.message || err), 'error');
@@ -2685,6 +2786,51 @@ function closeSidebar() {
       <div class="form-group">
         <label class="form-label">Owner / Landlord Name</label>
         <input class="form-input" id="newPropOwner" type="text" placeholder="Landlord name">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">WhatsApp Number</label>
+          <input class="form-input" id="newPropWhatsApp" type="tel" placeholder="+27 xxxxxxx">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Call Number</label>
+          <input class="form-input" id="newPropPhone" type="tel" placeholder="+27 xxxxxxx">
+        </div>
+        <div class="form-group" style="margin-bottom:0;grid-column:1/-1;">
+          <label class="form-label">Owner Email</label>
+          <input class="form-input" id="newPropEmail" type="email" placeholder="owner@email.com">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Owner ID Number</label>
+          <input class="form-input" id="newPropOwnerID" type="text" placeholder="SA ID number">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Bank</label>
+          <select class="form-input" id="newPropOwnerBank">
+            <option value="">Select bank...</option>
+            <option value="FNB">FNB</option>
+            <option value="Standard Bank">Standard Bank</option>
+            <option value="ABSA">ABSA</option>
+            <option value="Nedbank">Nedbank</option>
+            <option value="Capitec">Capitec</option>
+            <option value="African Bank">African Bank</option>
+            <option value="Tyme Bank">Tyme Bank</option>
+            <option value="Discovery Bank">Discovery Bank</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;grid-column:1/-1;">
+          <label class="form-label">Account Number</label>
+          <input class="form-input" id="newPropOwnerAccount" type="text" placeholder="Account number">
+        </div>
+      </div>
+      <div class="form-group" style="background:rgba(14,165,233,0.06);border:1px solid rgba(14,165,233,0.18);border-radius:10px;padding:12px 14px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:0.85rem;font-weight:700;color:#0ea5e9;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-graduation-cap"></i> NSFAS Accredited</div>
+            <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">Mark this property as NSFAS accredited</div>
+          </div>
+          <div class="toggle" id="newPropNsfasToggle" onclick="this.classList.toggle('on')" style="border-color:rgba(14,165,233,0.3);"></div>
+        </div>
       </div>
       <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#10b981;display:flex;align-items:center;gap:8px;">
         <i class="fa-solid fa-circle-check"></i>
