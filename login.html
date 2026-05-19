@@ -384,11 +384,13 @@ const googleBtn    = document.getElementById('googleSignInBtn');
 const googleBtnText = document.getElementById('googleBtnText');
 
 // ── Watch auth state — if already logged in, go straight to dashboard ──
+let redirecting = false;
 onAuthStateChanged(auth, (user) => {
-  if (user) {
+  if (user && !redirecting) {
     // Already signed in → redirect to dashboard
+    redirecting = true;
     window.location.replace('index.html');
-  } else {
+  } else if (!user) {
     // Not signed in → show the login form
     authChecking.classList.add('hide');
     setTimeout(() => {
