@@ -1171,7 +1171,7 @@ input[type=checkbox] {
 
 <!-- ── Firebase Auth guard script — runs before page is visible ── -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -1190,7 +1190,12 @@ const firebaseConfig = {
   databaseURL: "https://kasistay-3b79c-default-rtdb.firebaseio.com"
 };
 
-const app  = initializeApp(firebaseConfig, 'auth-app');
+// Use the default app name so auth and database share the same Firebase instance.
+// Calling initializeApp twice with the same config (no name) would error,
+// so we guard with a try/catch and getApp() fallback.
+import { getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+let app;
+try { app = getApp(); } catch { app = initializeApp(firebaseConfig); }
 const auth = getAuth(app);
 
 const guard = document.getElementById('authGuard');
@@ -1236,12 +1241,34 @@ function showDashboard(user) {
   setTimeout(() => { guard.style.display = 'none'; }, 420);
 }
 
+// Firebase restores auth state asynchronously from IndexedDB.
+// The very first callback can fire with null before the session is
+// restored, which would cause a redirect back to login immediately
+// after a successful sign-in (the "glitching" loop).
+// We give it a short grace window: if still null after 600 ms, only
+// then do we treat it as genuinely unauthenticated and redirect.
+let authResolved = false;
+let redirectTimer = null;
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    // Clear any pending redirect timer — user is authenticated
+    clearTimeout(redirectTimer);
+    authResolved = true;
     showDashboard(user);
   } else {
-    // Not authenticated → send to login page
-    window.location.replace('login.html');
+    if (authResolved) {
+      // Already had a valid session that just signed out — redirect immediately
+      window.location.replace('login.html');
+    } else {
+      // First null callback — may be a transient state while session restores.
+      // Wait 600 ms before redirecting to avoid race-condition flicker.
+      redirectTimer = setTimeout(() => {
+        if (!authResolved) {
+          window.location.replace('login.html');
+        }
+      }, 600);
+    }
   }
 });
 </script>
@@ -1828,7 +1855,7 @@ onAuthStateChanged(auth, (user) => {
 
 <!-- ─── FIREBASE + LOGIC ─── -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -1841,7 +1868,11 @@ const firebaseConfig = {
   databaseURL: "https://kasistay-3b79c-default-rtdb.firebaseio.com"
 };
 
-const app = initializeApp(firebaseConfig);
+// Reuse the default app already initialised by the auth script above.
+// Calling initializeApp again for the same default app would throw; we
+// guard with getApp() so both scripts share the exact same instance.
+let app;
+try { app = getApp(); } catch { app = initializeApp(firebaseConfig); }
 const db = getDatabase(app);
 
 let allListings = [];
