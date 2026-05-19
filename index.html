@@ -1171,11 +1171,9 @@ input[type=checkbox] {
 
 <!-- ── Firebase Auth guard script — runs before page is visible ── -->
 <script type="module">
-import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -1190,12 +1188,10 @@ const firebaseConfig = {
   databaseURL: "https://kasistay-3b79c-default-rtdb.firebaseio.com"
 };
 
-// Use the default app name so auth and database share the same Firebase instance.
-// Calling initializeApp twice with the same config (no name) would error,
-// so we guard with a try/catch and getApp() fallback.
-import { getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-let app;
-try { app = getApp(); } catch { app = initializeApp(firebaseConfig); }
+// Single default Firebase app — shared with the DB script below via
+// the global window.__kasiApp reference so both modules use one instance.
+const app  = initializeApp(firebaseConfig);
+window.__kasiApp = app;          // expose for the DB script
 const auth = getAuth(app);
 
 const guard = document.getElementById('authGuard');
@@ -1241,34 +1237,14 @@ function showDashboard(user) {
   setTimeout(() => { guard.style.display = 'none'; }, 420);
 }
 
-// Firebase restores auth state asynchronously from IndexedDB.
-// The very first callback can fire with null before the session is
-// restored, which would cause a redirect back to login immediately
-// after a successful sign-in (the "glitching" loop).
-// We give it a short grace window: if still null after 600 ms, only
-// then do we treat it as genuinely unauthenticated and redirect.
-let authResolved = false;
-let redirectTimer = null;
-
+// onAuthStateChanged fires exactly once on page load with the persisted
+// session (or null if not signed in). With a single Firebase app instance
+// there is no race condition — we can redirect immediately on null.
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Clear any pending redirect timer — user is authenticated
-    clearTimeout(redirectTimer);
-    authResolved = true;
     showDashboard(user);
   } else {
-    if (authResolved) {
-      // Already had a valid session that just signed out — redirect immediately
-      window.location.replace('login.html');
-    } else {
-      // First null callback — may be a transient state while session restores.
-      // Wait 600 ms before redirecting to avoid race-condition flicker.
-      redirectTimer = setTimeout(() => {
-        if (!authResolved) {
-          window.location.replace('login.html');
-        }
-      }, 600);
-    }
+    window.location.replace('login.html');
   }
 });
 </script>
@@ -1855,24 +1831,19 @@ onAuthStateChanged(auth, (user) => {
 
 <!-- ─── FIREBASE + LOGIC ─── -->
 <script type="module">
-import { initializeApp, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update, remove, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD_MtScfT0J5b8LbMm5oAATmw84plKWl-0",
-  authDomain: "kasistay-3b79c.firebaseapp.com",
-  projectId: "kasistay-3b79c",
-  storageBucket: "kasistay-3b79c.appspot.com",
-  messagingSenderId: "19156366595",
-  appId: "1:19156366595:web:c64b9bd6dfde5790e02536",
-  databaseURL: "https://kasistay-3b79c-default-rtdb.firebaseio.com"
-};
+// Reuse the Firebase app initialised by the auth script above (stored on window).
+// We poll briefly in case the auth script module hasn't finished yet.
+async function waitForApp() {
+  let tries = 0;
+  while (!window.__kasiApp && tries++ < 50) {
+    await new Promise(r => setTimeout(r, 20));
+  }
+  return window.__kasiApp;
+}
 
-// Reuse the default app already initialised by the auth script above.
-// Calling initializeApp again for the same default app would throw; we
-// guard with getApp() so both scripts share the exact same instance.
-let app;
-try { app = getApp(); } catch { app = initializeApp(firebaseConfig); }
+const app = await waitForApp();
 const db = getDatabase(app);
 
 let allListings = [];
